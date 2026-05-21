@@ -14,7 +14,6 @@ Description:
 """
 
 from math import pi
-
 from pathlib import Path
 
 from pyfea import mm, m, s
@@ -30,13 +29,13 @@ manager = MaterialManager()
 
 
 # Magnet length & mass
-material_name = parameters.stator_poles.material
+material_name = parameters.armature_poles.material
 number_poles = parameters.model.number_pairs
 
-length = parameters.stator_poles.axial_length * parameters.model.number_pairs * 2
-radius = parameters.stator_poles.radial_thickness
+length = parameters.armature_poles.axial_length * parameters.model.number_pairs * 2
+radius = parameters.armature_poles.radial_thickness
 
-magnet_material = manager.use_material(material_name, grade=parameters.stator_poles.grade)
+magnet_material = manager.use_material(material_name, grade=parameters.armature_poles.grade)
 
 density = magnet_material.NdFeB.physical.density
 volume = length * radius ** 2 * pi

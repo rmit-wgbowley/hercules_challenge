@@ -18,6 +18,9 @@
     "smith",
     "nullset",
     "picounits",
-    "pyfea"
+    "pyfea",
+    "FEMMMagnetostaticSolver",
+    "magnetostatic",
+    "femm"
   ]
 }
