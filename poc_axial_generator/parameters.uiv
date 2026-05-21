@@ -12,14 +12,17 @@ unit_frame: si_metric.ut
 # Magnetics is calculated using FEMMMagnetostaticSolver, electro and mechanical domains
 # are lumped parameter based.
 
-[model]
-energy_required: 10 (J)
+[numerical]
+time_step: 50 u(s)
 
+[model]
 environmental_temperature: 293.15 (K)
 environmental_material: "air"
 number_pairs: 3
 
-shaking_frequency: 4 (s^-1)
+acceleration_max: 40 (m*s^-2)
+shaking_frequency: 8 (s^-1)
+energy_required: 10 (J)
 
 # NOTE: This efficiency parameter is for rough_calculation/rough_model.py (not FEM model)
 cycling_efficiency: 0.6 

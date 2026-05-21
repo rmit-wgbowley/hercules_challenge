@@ -21,6 +21,12 @@
     "pyfea",
     "FEMMMagnetostaticSolver",
     "magnetostatic",
-    "femm"
+    "femm",
+    "xlabel",
+    "ylabel",
+    "fontsize",
+    "fontweight",
+    "linestyle",
+    "figsize"
   ]
 }

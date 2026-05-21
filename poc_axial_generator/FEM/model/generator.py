@@ -13,8 +13,7 @@ from pyfea.domain.units import DynamicLoader
 
 from pyfea.domain.materials.manager import MaterialManager
 from pyfea.domain.geometry.definitions import CoordinateSystem
-from pyfea.domain.geometry.builder import Builder, VectorGeometry
-from pyfea.domain.geometry.elements.vectors import CSGNode
+from pyfea.domain.geometry.builder import Builder, VectorGeometry, Part
 from pyfea.domain.geometry.domain import Domain, BoundaryType
 
 from pyfea.solver.solver_interface import BaseSolver, MagneticSolver
@@ -47,7 +46,7 @@ class AxialShakeGenerator:
         self._load_material()
         self._derived_parameters()
     
-    def construct_domain(self, solver: BaseSolver) -> Domain:
+    def construct_domain(self, solver: BaseSolver) -> tuple[Domain, list[Part]]:
         """ Constructs the domain based on solver physics domain """
         solver_interfaces = solver.__class__.__bases__
         
@@ -174,7 +173,7 @@ class ConstructMagnetic:
         for index, slot in enumerate(slots):
             # Sets the phase of slot in pattern [A, A'] or [A, A]
             phase = generator.PHASE
-            polarity = 1 # +1 if index % 2 == 0 else -1
+            polarity = +1 if index % 2 == 0 else -1
             
             # Constructs meta-data and promotes to part while appending to domain
             metadata = MagneticData(
@@ -184,6 +183,7 @@ class ConstructMagnetic:
             parts.append(Builder.promote_to_part(slot, metadata))
             
         # Adds the poles to the domain
+        armature = []
         for index, pole in enumerate(poles):
             # Alternate magnetization direction every pole (e.g. N-S-N-S)
             pole_magnetization = 90 if index % 2 == 0 else - 90
@@ -193,8 +193,10 @@ class ConstructMagnetic:
                 generator.ARMATURE_ID, generator.armature_material,
                 magnetization = pole_magnetization * nullset
             )
-            parts.append(Builder.promote_to_part(pole, metadata))
-        
+            pole = Builder.promote_to_part(pole, metadata)
+            parts.append(pole)
+            armature.append(pole)
+
         # Overall simulation problem definition
         meta = MagneticData(generator.ENVIRONMENT_ID, generator.environmental_material)
         return Domain(
@@ -204,4 +206,5 @@ class ConstructMagnetic:
             generator.coordinate_system,
             boundary,
             params.model.environmental_temperature
-        )
+        ), armature
+        
