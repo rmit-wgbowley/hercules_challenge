@@ -5,16 +5,19 @@ Description:
     Rough analytical model for the POC_AXIAL_GENERATOR using
     potential energy & efficiency factor.
     
+    This MODEL is based on energy converted over a displacement
+    at a specific CONSTANT acceleration. It is a rough approximation.
+    
     NOTE:
-    Rebound dynamics will decreases shakes a-lot & also efficiency
-    most likely will be in the 70-90% range not 60%.
+    Rebound dynamics may increase energy generated per shake but
+    may not.
 """
 
 from math import pi
 
 from pathlib import Path
 
-from pyfea import mm, m, s, second
+from pyfea import mm, m, s
 from pyfea.domain.units import Parser
 from pyfea.domain.materials.manager import MaterialManager
 
@@ -52,7 +55,7 @@ acceleration = 1 * (m / s**2)
 print(f"Efficiency: {efficiency:.3f}, Movement_length: {movement_length:.3f}, frequency: {frequency:.3f}")
 
 for i in range(0, 20):
-    potential = 2 * acceleration * movement_length * mass
+    potential = acceleration * movement_length * mass
     usable_potential = potential * efficiency
     number_of_shakes = energy_required/usable_potential
 
