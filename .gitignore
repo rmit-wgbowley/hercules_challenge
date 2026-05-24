@@ -1,3 +1,5 @@
 pyfea.log
 *.pyc
 /poc_axial_generator/FEM/outputs
+
+*.zip

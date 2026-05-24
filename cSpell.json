@@ -27,6 +27,8 @@
     "fontsize",
     "fontweight",
     "linestyle",
-    "figsize"
+    "figsize",
+    "milli",
+    "mosfet"
   ]
 }
