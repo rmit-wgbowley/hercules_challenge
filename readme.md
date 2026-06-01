@@ -34,7 +34,7 @@ The generator uses `Faraday's Law of Induction`, which states that the rate of c
     <img src="proposal_submission\prototype_modelling\generator_output.png" alt="Generator Output" style="max-width:600px;">
   </a>
   <figcaption>
-    Figure 2: Generator induced voltage output vs time:
+    Figure 2A: Generator induced voltage output vs time:
     <a href="poc_axial_generator\FEM\main.py"><i>Click here for pyFEA code</i></a>
   </figcaption>
   <br>
@@ -45,6 +45,19 @@ To improve the generator's output, I modeled thin `0.2mm` iron laminations to he
 $$V_{\text{induced}} = -\frac{d\lambda}{dz} \cdot \frac{dz}{dt} \implies -\frac{d\lambda}{dt}$$
 
 $$\lambda(z) \propto \frac{N^2 \mu(z) A}{l} \implies \lambda(z) \propto \mu(z)$$
+
+## Modelling assumptions
+
+<figure align="center">
+  <a href="poc_axial_generator\FEM\main.py">
+    <img src="proposal_submission\axial_generator_images\base_solver_assumptions.png" alt="Model Assumptions" style="max-width:600px;">
+  </a>
+  <figcaption>
+    Figure 2B: Magnetostatic Modelling assumptions & material parameters:
+    <a href="poc_axial_generator\FEM\main.py"><i>Click here for pyFEA code</i></a>
+  </figcaption>
+  <br>
+</figure>
 
 # Credits:
 
