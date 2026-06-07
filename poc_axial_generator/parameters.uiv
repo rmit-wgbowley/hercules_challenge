@@ -20,7 +20,7 @@ environmental_temperature: 293.15 (K)
 environmental_material: "air"
 number_pairs: 3
 
-acceleration_max: 40 (m*s^-2)
+acceleration_max: 50 (m*s^-2)
 shaking_frequency: 8 (s^-1)
 energy_required: 10 (J)
 

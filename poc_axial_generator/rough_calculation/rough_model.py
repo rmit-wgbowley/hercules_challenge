@@ -50,10 +50,10 @@ energy_required = parameters.model.energy_required
 efficiency = parameters.model.cycling_efficiency
 frequency = parameters.model.shaking_frequency
 
-acceleration = 1 * (m / s**2)
+acceleration = 5 * (m / s**2)
 print(f"Efficiency: {efficiency:.3f}, Movement_length: {movement_length:.3f}, frequency: {frequency:.3f}")
 
-for i in range(0, 20):
+for i in range(0, 10):
     potential = acceleration * movement_length * mass
     usable_potential = potential * efficiency
     number_of_shakes = energy_required/usable_potential
@@ -64,4 +64,4 @@ for i in range(0, 20):
     # print(f"Number of shakes: {energy_required/usable_potential:.3f} for target: {energy_required:.3f}")
     # print(f'Time to fully operation: {time:.3f} @ {frequency}')
     print(f"Energy gain per second: {usable_potential * (frequency.stripped):.3f}")
-    acceleration += 1 * (m / s**2)
+    acceleration += 5 * (m / s**2)
