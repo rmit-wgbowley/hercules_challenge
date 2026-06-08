@@ -8,7 +8,7 @@ Description:
 
 from math import ceil
 
-from pyfea import nullset, ampere, mm
+from pyfea import Q, nullset, ampere, mm
 from pyfea.domain.units import DynamicLoader
 
 from pyfea.domain.materials.manager import MaterialManager
@@ -36,15 +36,22 @@ class AxialShakeGenerator:
     
     PHASE = StaticCircuit("phase", 0 * ampere, CircuitConfig.series)
     
-    def __init__(self, parameters: DynamicLoader) -> None:
+    def __init__(self, parameters: DynamicLoader, travel: Q) -> None:
         """ Initializes the class & defines dependencies """
         self.params = parameters
-        
+        self.travel = travel
         # Defines the coordinate system and model materials
         self.coordinate_system = CoordinateSystem.AXI_SYMMETRIC
 
         self._load_material()
         self._derived_parameters()
+    
+    def update_parameters(
+        self, slot_axial_length, slot_radial_thickness
+    ) -> None:
+        """ Updates parameters within the configuration to reflect changes """
+        self.params.find_and_replace("model.number_pairs.axial_length", slot_axial_length)
+        self.params.find_and_replace("stator_slots.radial_thickness", slot_radial_thickness)
     
     def construct_domain(self, solver: BaseSolver) -> tuple[Domain, list[Part]]:
         """ Constructs the domain based on solver physics domain """
@@ -64,21 +71,21 @@ class AxialShakeGenerator:
     def build_armature(self) -> list[VectorGeometry]:
         """ Builds the poles within the armature """
         poles = []
-        for pole in range(0, int(2 * self.params.model.number_pairs.value)):
+        for pole in range(0, int(self.number_poles)):
             offset = - self.armature_length / 2
             bottom_left = offset + pole * self.pole_length
-            
+
             pole_shape = Builder.rectangle((0 * mm, bottom_left), self.armature_poles_radius, self.pole_length)
             poles.append(pole_shape)
-        
         return poles
     
     def build_stator(self) -> list[VectorGeometry]:
         """ Builds the slots within the stator """
         slots = []
+
         for slot in range(0, int(self.number_slots.value)):
             offset = - self.stator_length / 2
-            bottom_left = offset + slot * self.pitch
+            bottom_left = offset + slot * self.pitch + (self.pole_length - self.slot_length) / 2
 
             slot_shape = Builder.rectangle(
                 (self.slot_inner_radius, bottom_left),
@@ -112,17 +119,17 @@ class AxialShakeGenerator:
     def _derived_parameters(self) -> None:
         """ Calculates derived parameters from base parameters """
         self.number_poles = 2 * self.params.model.number_pairs
+        self.number_slots = self.params.model.number_slots
         self.pole_length = self.params.armature_poles.axial_length
         self.slot_length = self.params.stator_slots.axial_length
-        
+
         # Calculates the length of the different components within the assembly
         self.armature_length = self.number_poles * self.pole_length
-        self.stator_length = 2 * self.armature_length
-        self.tube_length = 3 * self.armature_length
+        self.stator_length = self.pole_length * self.number_slots  
+        self.tube_length = self.armature_length + self.travel * 2 
         
         # Calculates the number of slots within the device
-        self.number_slots = 2 * self.number_poles
-        self.pitch = self.stator_length / self.number_slots
+        self.pitch = self.pole_length
 
         # Calculates for radial placement
         self.armature_poles_radius = self.params.armature_poles.radial_thickness
@@ -185,7 +192,7 @@ class ConstructMagnetic:
         # Adds the poles to the domain
         armature = []
         for index, pole in enumerate(poles):
-            # Alternate magnetization direction every pole (e.g. N-S-N-S)
+            # Alternate magnetization direction every pole (e.g. NS-SN-NS-SN)
             pole_magnetization = 90 if index % 2 == 0 else - 90
             
             # Constructs meta-data and promotes to part while appending to domain

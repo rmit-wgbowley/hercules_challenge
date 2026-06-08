@@ -1,5 +1,5 @@
 """
-Filename: main.py
+Filename: r&d_model.py
 
 Description:
     Axial-shake generator using pyfea for magnetics and lumped 
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 from math import pi
 from pathlib import Path
-from pyfea import Q, s, m, nullset, millisecond
+from pyfea import Q, s, m, nullset, millisecond, millimeter
 from pyfea.domain.units import Parser
 from pyfea.solver.femm.domains.magnetostatic.solver import FEMMMagnetostaticSolver
 from pyfea.solver.solver_outputs import SolverOutputs, CircuitOptions
@@ -31,7 +31,8 @@ solver_folder = BASE_DIR / "FEM/outputs"
 parameters = Parser.open(para_dir)
 
 # Initializes model & magnetic solver
-model = AxialShakeGenerator(parameters)
+travel = 2 * parameters.armature_poles.axial_length
+model = AxialShakeGenerator(parameters, travel)
 magnetic = FEMMMagnetostaticSolver(solver_folder, verbose=False)
 
 # Builds magnetic domain & translates it into solver
@@ -47,12 +48,12 @@ results = magnetic.solve(outputs)
 old_flux_linkage = results[model.PHASE].flux_linkage
 
 # Human shake (simplified z(t) motion)
-max_acceleration = parameters.model.acceleration_max
 frequency = parameters.model.shaking_frequency
+max_displacement_amplitude = travel
 
-def z_axial_position(t: Q) -> Q:
+def z_axial_position(t  : Q) -> Q:
     """ Assumes that the initial position equals z=0 """
-    return - max_acceleration / (2*pi*frequency) ** 2 * (2*frequency*t).sin()
+    return - max_displacement_amplitude * (2*pi*frequency*t).sin()
 
 # Simulation Loop
 time_step = parameters.numerical.time_step
@@ -60,6 +61,7 @@ t, z = 0 * s, 0 * m
 
 t_set = []
 v_set = []
+z_set = [] # Track position data
 
 iteration = 0 
 
@@ -81,6 +83,7 @@ while t < 500 * millisecond:
     
     t_set.append(t.value)
     v_set.append(induced.value)
+    z_set.append(new_z_axial_position.value) # Store position float
     
     old_flux_linkage = new_flux_linkage 
     z = new_z_axial_position
@@ -90,17 +93,22 @@ while t < 500 * millisecond:
 
 print(f"Simulation Complete. Total steps: {len(t_set)}") 
 
-plt.figure(figsize=(9, 5))
-plt.plot(t_set, v_set, color='#1f77b4', linewidth=2, label='Phase Induced Voltage')
+# Plotting results using shared time axis
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
 
-plt.title(
-    'Axial-Shake Generator Simulation: Induced Voltage vs Time', 
-    fontsize=12, fontweight='bold', pad=15
-)
-plt.xlabel('Time (s)', fontsize=10)
-plt.ylabel('Induced Voltage (V)', fontsize=10)
-plt.grid(True, linestyle='--', alpha=0.5)
-plt.legend(loc='upper right')
+# Induced Voltage
+ax1.plot(t_set, v_set, color='#1f77b4', linewidth=2, label='Phase Induced Voltage')
+ax1.set_ylabel('Induced Voltage (V)', fontsize=10)
+ax1.grid(True, linestyle='--', alpha=0.5)
+ax1.legend(loc='upper right')
+ax1.set_title('Axial-Shake Generator Simulation Dynamics', fontsize=12, fontweight='bold', pad=10)
+
+# Displacement Position
+ax2.plot(t_set, z_set, color='#2ca02c', linewidth=2, label='Axial Position z(t)')
+ax2.set_xlabel('Time (s)', fontsize=10)
+ax2.set_ylabel('Position (m)', fontsize=10)
+ax2.grid(True, linestyle='--', alpha=0.5)
+ax2.legend(loc='upper right')
 
 plt.tight_layout()
 plt.savefig(solver_folder / "induced_voltage_plot.png", dpi=150)

@@ -23,7 +23,7 @@ In humanitarian engineering, systems often help compensate for deficits. `The Pi
   <p><i>Figure 1: Cross-sectional analysis: <a href="poc_axial_generator\parameters.uiv">Click here for parameters</a></i></p>
 </div>
 
-The generator uses `Faraday's Law of Induction`, which states that the rate of change of flux linkage over time produces an `opposing voltage` to the direction of motion. To harness this effect, the generator stator has `10` coils with alternating winding directions. The generator's armature has `5` N52 magnets in an `N-N-S-S-N` orientation; the armature also has two conical compression springs acting on it, which form a system of equilibrium. This allows for small forces on the armature to cause a damped sine-wave motion rather than a single pulse.
+The generator uses `Faraday's Law of Induction`, which states that the rate of change of flux linkage over time produces an `opposing voltage` to the direction of motion. To harness this effect, the generator stator has `10` coils with alternating winding directions. The generator's armature has `5` N52 magnets in an `N-N-S-S-N` orientation; the armature also has magnets acting on it, which form a system of equilibrium. This allows for small forces on the armature to cause a damped sine-wave motion rather than a single pulse.
 
 <div align="center">
   <a href="poc_axial_generator\FEM\main.py">
