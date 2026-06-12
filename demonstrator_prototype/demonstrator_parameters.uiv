@@ -5,8 +5,8 @@ unit_frame: si_metric.ut
 [notes]
 # The configuration file describes a single-phase axial generator simulation.
 
-# The geometry consists of a stator (coils), armature (magnets) and 2 springs connected to
-# the armature. The simulation itself is a magneto-electro-mechanical model using the 
+# The geometry consists of a stator (coils) and armature (magnets).
+# The simulation itself is a magneto-electro-mechanical model using the 
 # axial-symmetric coordinate system (Z-R) (Axial-Radial)
 
 # Magnetics is calculated using FEMMMagnetostaticSolver, electro and mechanical domains
@@ -28,7 +28,7 @@ shaking_frequency: 8 (s^-1)
 cycling_efficiency: 0.6 
 
 [stator_core]
-gap_radial_thickness: 0.5 m(m)
+gap_radial_thickness: 1 m(m)
 wall_radial_thickness: 1 m(m)
 
 [stator_slots]
@@ -36,8 +36,8 @@ material: "copper"
 wire_diameter: 0.2 m(m)
 fill_factor: 0.70
 
-axial_length: 5 m(m)
-radial_thickness: 3 m(m)
+axial_length: 4.6 m(m)
+radial_thickness: 3.4 m(m)
 
 [armature_poles]
 material: "NdFeB"
@@ -45,13 +45,3 @@ grade: "N52"
 
 radial_thickness: 5 m(m)
 axial_length: 10 m(m)
-
-# NOTE: Spring unloaded length needed is calculated based on armature length
-[armature_springs]
-density: 7850 (kg/m^3)
-shear_modulus: 1450 M(Pa)
-
-spring_diameter: 9 m(m)
-wire_diameter: 0.9 m(m)
-number_coils: 7
-

@@ -16,7 +16,7 @@ Description:
 from math import pi
 from pathlib import Path
 
-from pyfea import mm, m, s
+from pyfea import mm, m, s, joule
 from pyfea.domain.units import Parser
 from pyfea.domain.materials.manager import MaterialManager
 
@@ -46,7 +46,7 @@ print(f"Magnet core mass: {mass:3f} @ density: {density:3f}")
 
 # Calculate potential energy @ different accelerations over 2 pole pairs
 movement_length = 50 * mm
-energy_required = parameters.model.energy_required
+energy_required = 10 * joule
 efficiency = parameters.model.cycling_efficiency
 frequency = parameters.model.shaking_frequency
 

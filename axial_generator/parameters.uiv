@@ -1,0 +1,47 @@
+[version]
+format: 0.1.0
+unit_frame: si_metric.ut
+
+[notes]
+# The configuration file describes a single-phase axial generator simulation.
+
+# The geometry consists of a stator (coils) and armature (magnets).
+# The simulation itself is a magneto-electro-mechanical model using the 
+# axial-symmetric coordinate system (Z-R) (Axial-Radial)
+
+# Magnetics is calculated using FEMMMagnetostaticSolver, electro and mechanical domains
+# are lumped parameter based.
+
+[numerical]
+time_step: 500 u(s)
+
+[model]
+environmental_temperature: 293.15 (K)
+environmental_material: "air"
+number_pairs: 4
+number_slots: 4
+
+travel_factor: 2
+shaking_frequency: 8 (s^-1)
+
+# NOTE: This efficiency parameter is for rough_calculation/rough_model.py (not FEM model)
+cycling_efficiency: 0.6 
+
+[stator_core]
+gap_radial_thickness: 0.5 m(m)
+wall_radial_thickness: 1 m(m)
+
+[stator_slots]
+material: "copper"
+wire_diameter: 0.2 m(m)
+fill_factor: 0.70
+
+axial_length: 5 m(m)
+radial_thickness: 3 m(m)
+
+[armature_poles]
+material: "NdFeB"
+grade: "N52"
+
+radial_thickness: 5 m(m)
+axial_length: 10 m(m)
