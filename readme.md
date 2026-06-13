@@ -69,7 +69,7 @@ $$\lambda(z) \propto \frac{N^2 \mu(z) A}{l} \implies \lambda(z) \propto \mu(z)$$
 * Vedica Chhabra - The work you did on the submission document was wonderful. thanks.
 * Dhanvin Shingri Sunil Kumar - Thanks for doing the initial designs with the water-bottle. 
 * Jaspreet Kaur Kingra - I generally appreciate the research & note taking you did during meetings.
-* Jazzi - no comment
+* Jazzi Alderton - Thank you for helping me improve my team management skills.
 
 ### Honourable Mentions
 * Lawson Gallup - Thanks for 3D printing the `POC` model overnight
