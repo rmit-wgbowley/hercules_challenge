@@ -40,7 +40,7 @@ $$\frac{d\lambda}{dz} = \frac{d}{dz} (\mu H \cos(z)) = -\mu H \sin(z)$$
 > [!note]
 > Flux linkage can be approximated analytically for intuition, while the final flux linkage is obtained by FEM.
 
-So from these two rates, the three main variables are exposed, increasing the acceleration `A` & frequency `$\omega$` will increase induced voltage and hence energy production, but are constrained by the user's physical abilities. Whereas the permeability `$\mu$` and `H` will increase the induced voltage while generally not being constrained by the user's physical abilities.
+So from these two rates, the three main variables are exposed, increasing the acceleration `A` & frequency `ω` will increase induced voltage and hence energy production, but are constrained by the user's physical abilities. Whereas the permeability ` μ` and `H` will increase the induced voltage while generally not being constrained by the user's physical abilities.
 ```
 TOP (N) (3mm)
 
