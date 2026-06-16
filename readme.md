@@ -53,7 +53,7 @@ core (N-S|S-N|N-S|S-N|N-S|S-N|N-S|S-N) (80mm)
 BOTTOM (N) (3mm)
 ```
 
-Hence the topology above was chosen, the`TOP` and `BOTTOM` magnets create a restoring magnetic force, allowing the device to build velocity from oscillating the device with the user's forearm muscles. The `N-S|S-N` arrangement leads to spikes in the B field over the z-axis, hence increasing induced voltage and hence power output.
+Hence the topology above was chosen, the `TOP` and `BOTTOM` magnets create a restoring magnetic force, allowing the device to build velocity from oscillating the device with the user's forearm muscles. The `N-S|S-N` arrangement leads to spikes in the B field over the z-axis, hence increasing induced voltage and hence power output.
 
 | Parameter | Value & Unit | 
 | :--- | :--- | 
