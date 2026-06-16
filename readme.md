@@ -92,10 +92,10 @@ Hence the topology above was chosen, the`TOP` and `BOTTOM` magnets create a rest
 ### Group Members:
 * Anna Bowley - Thank you for introducing me to Rory's wonderful team.
 * Rory Smith - Generally, it was a pleasure working with you. I wish I had your Blender skills.
-* Vedica Chhabra - The work you did on the submission document was wonderful. Thanks.
-* Dhanvin Shingri Sunil Kumar - Thanks for doing the initial designs with the water bottle. 
-* Jaspreet Kaur Kingra - I generally appreciate the research & note-taking you did during meetings.
-* Jazzi - Thank you for helping me improve my team management skills.
+* Vedica Chhabra - The work you did on the submission document was wonderful. thanks.
+* Dhanvin Shingri Sunil Kumar - Thanks for doing the initial designs with the water-bottle. 
+* Jaspreet Kaur Kingra - I generally appreciate the research & note taking you did during meetings.
+* Jazzi Alderton - Thank you for helping me improve my team management skills.
 
 ### Honourable Mentions
 * Lawson Gallup - Thanks for 3D printing the `POC` model & `Deliverable` over two different nights.
