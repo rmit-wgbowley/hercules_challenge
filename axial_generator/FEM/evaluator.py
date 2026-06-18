@@ -120,8 +120,14 @@ if __name__ == "__main__":
 
     # Imports the parameters (value:unit) into memory
     parameters = Parser.open(para_dir)
-
     model = build_generator(parameters)
-    print(simulate_resistance(solver_folder, model, True))
-    print(simulate_rms_voltage(solver_folder, model, True)[0])
-    
+
+    resistance = simulate_resistance(solver_folder, model, True)
+    v_rms, [v_set, t_set] = simulate_rms_voltage(solver_folder, model, True)
+    peak_voltage = max(abs(v) for v in v_set) * volt
+
+    print("-" * 30)
+    print(f"Resistance:     {resistance:.4f}")
+    print(f"RMS Voltage:    {v_rms:.4f}")
+    print(f"Peak Voltage:   {peak_voltage:.4f}")
+    print("-" * 30)
