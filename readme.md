@@ -7,6 +7,9 @@
 ## Overview
 The Hercules Challenge is a co-design consortium challenge available for first-year engineers through the mandatory introductory class, "Introduction to Professional Engineering." The idea behind the Hercules Challenge is to introduce humanitarian engineering to students who might otherwise never consider it.
 
+> [!IMPORTANT]
+> `The Pantheon` group received a commendation award for work on the isopod at the Hercules challenge night at RMIT. This means that all team members get the chance to join last years teams to help them.
+
 ## IsoPod | Pill System
 
 ![Status](https://img.shields.io/badge/Status-WIP-2C2C2C?style=flat-square)
