@@ -125,22 +125,3 @@ $$P_{avg} = \frac{V_{rms}^2}{R}$$
 the generator produces `0.43 W` at `8.81 Hz`. This result is interesting because the physical generator had fewer turns per slot than the simulated version, while all other geometric parameters remained the same. This most likely means that the simulation was either underestimating the total change in flux linkage between the stator and armature while overestimating the average change in flux linkage, or that the motion of the stator differed due to the non-linear response of the restoring magnets compared to a clean sinusoidal wave.
 
 Another notable observation is that the trace appears asymmetrical, with a smooth rise but a noisy fall. This can most likely be attributed to degradation of the prototype due to its usage as a demo item.
-
-# Credits
-
-### Group Members
-
-- Anna Bowley – Thank you for introducing me to Rory's wonderful team and the humanitarian elements.
-- Rory Smith – Generally, it was a pleasure working with you. I wish I had your Blender skills.
-- Vedica Chhabra – The work you did on the submission document and the poster was wonderful. Thanks.
-- Dhanvin Shingri Sunil Kumar – Thanks for doing the initial designs with the water bottle and for your articulate pitching skills.
-- Jaspreet Kaur Kingra – I generally appreciate the research and note-taking you did during meetings. And watch out for stairs lolz.
-- Jazzi Alderton – Thank you for your exquisite PR skills and for helping me improve my team management skills.
-
-### Honourable Mentions
-
-- Lawson Gallup – Thanks for 3D printing the POC model and deliverable over two different nights.
-- Spyros Schismenos – Thanks for teaching me humanitarian engineering (generally). I never considered it before; honestly, I appreciate your insights.
-- Myles Fraser – Thanks for discussing the philosophical elements of humanitarian engineering, and obviously for teaching me the eloquent idea behind froth flotation.
-- Thanks to the guys at the RMIT Maker Space – You guys are generally a treasure to the engineering community.
-- Thanks to the guys at the RMIT Motorsport City Workshop @ 4 pm 26/06/16 (ISO-DATE) for letting me borrow wire strippers for the grant night. I owe you two different PCBs, lmao.
