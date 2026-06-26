@@ -18,23 +18,21 @@ time_step: 500 u(s)
 [model]
 environmental_temperature: 293.15 (K)
 environmental_material: "air"
-number_pairs: 4
+number_pairs: 3
 number_slots: 4
 
 travel_factor: 2
-shaking_frequency: 8 (s^-1)
-
-# NOTE: This efficiency parameter is for rough_calculation/rough_model.py (not FEM model)
-cycling_efficiency: 0.6 
+shaking_frequency: 8.8 (s^-1)
 
 [stator_core]
-gap_radial_thickness: 1 m(m)
-wall_radial_thickness: 1 m(m)
+# material: "ABS" | isn't taken into consideration during simulation (AIR)
+gap_radial_thickness: 2 m(m)
+wall_radial_thickness: 0.5 m(m)
 
 [stator_slots]
 material: "copper"
 wire_diameter: 0.2 m(m)
-fill_factor: 0.70
+fill_factor: 0.7
 
 axial_length: 4.6 m(m)
 radial_thickness: 3.4 m(m)
@@ -45,3 +43,15 @@ grade: "N52"
 
 radial_thickness: 5 m(m)
 axial_length: 10 m(m)
+
+[restoring_poles]
+material: "NdFeB"
+grade: "N52"
+
+radial_thickness: 6 m(m)
+axial_length: 3 m(m)
+axial_spacing: 5 m(m)
+
+[armature]
+# material: "carbon fibre" | isn't taken into consideration during simulation (AIR)
+radial_thickness: 1 m(m)

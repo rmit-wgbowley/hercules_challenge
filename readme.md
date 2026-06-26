@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="demonstrator_prototype\generator\magnetic_field.png" alt="Flux gradient from pyFEA | FEMM" style="max-width:600px;">
+  <img src="media/quasi_transient_magnitude_of_b.gif" syle="max-width:600px;">
   <br>
   <em>Axial Shake Powered Pill System – Electromechanical Design of the IsoPod by <a href="https://github.com/wgbowley">William Bowley</a></em>
 </p>
@@ -23,10 +23,10 @@ In humanitarian engineering, systems often help compensate for deficits. `IsoPod
 ## Axial Shake Generator
 
 <div align="center">
-  <a href="demonstrator_prototype\demonstrator_parameters.uiv">
-    <img src="demonstrator_prototype\demonstrator_cross_section.png" alt="Generator cross section" style="max-width:600px;">
+  <a href="media\demonstrator_cross_section.png">
+    <img src="simulation\parameters.uiv" alt="Generator cross section" style="max-width:600px;">
   </a>
-  <p><i>Figure 1: Cross-sectional analysis: <a href="demonstrator_prototype\demonstrator_parameters.uiv">Click here for parameters</a></i></p>
+  <p><i>Figure 1: Cross-sectional analysis: <a href="simulation\parameters.uiv">Click here for parameters</a></i></p>
 </div>
 
 The machine uses `Faraday's Law of Induction`, which states that the rate of change of flux linkage over time produces an `opposing voltage` to the direction of motion. Using related rates from calculus II, we can see the two main components:
@@ -59,7 +59,7 @@ BOTTOM (N) (3mm)
 Hence the topology above was chosen. The `TOP` and `BOTTOM` magnets create a restoring magnetic force, allowing the device to build velocity from oscillating the device with the user's forearm muscles. The `N-S|S-N` arrangement leads to spikes in the B field over the z-axis, hence increasing induced voltage and therefore power output.
 
 <div align="center">
-<img src="deliverable_submission\Images\magnitude_of_b_field_along_armature_surface.png" alt="b_field_along_armature_surface" style="max-width:600px;">
+<img src="media\magnetic_field_along_z_axis.png" alt="b_field_along_armature_surface" style="max-width:600px;">
   </a>
   <p><i>Figure 2: Magnitude of b field along armature surface with the N-S|S-N arrangement </i></p>
 </div>
@@ -89,10 +89,10 @@ Hence the topology above was chosen. The `TOP` and `BOTTOM` magnets create a res
 The model was constructed under axial symmetry (Z-R) due to the generator being symmetric around its axis. A Dirichlet boundary condition was used, with the radial boundary distance being `2` x `slot_outer_radius` and the axial boundary distance being `1.2` x `stator_tube_length`. The field condition was asymptotic due to the `FEMMMagnetostaticSolver` magnet source limitation within AC simulations. The environment material was `air` while assuming zero conductivity through the media.
 
 <div align="center">
-  <a href="axial_generator\FEM\r&d_model.py">
-    <img src="demonstrator_prototype\generator\8poles4slots.png" alt="Generator Output" style="max-width:600px;">
+  <a href="simulation\evaluator.py">
+    <img src="media\induced_voltage_plot.png" alt="Generator Output" style="max-width:600px;">
   </a>
-  <p><i>Figure 3: Generator induced voltage output vs time: <a href="axial_generator\FEM\r&d_model.py">Click here for pyFEA code</a></i></p>
+  <p><i>Figure 3: Generator induced voltage output vs time: <a href="simulation\evaluator.py">Click here for pyFEA code</a></i></p>
 </div>
 
 The simulated generator produced a peak voltage of `8.05 V` and an RMS voltage of `4.1 V`, while the internal resistance was `31.7 Ω` with `274 turns` per coil. The power generated was `0.53 W` at `8 Hz` with `20 mm` of stator displacement and a peak-to-peak displacement of `40 mm`.
@@ -104,7 +104,7 @@ The generator was printed out of ABS on a Voron 2.4. The armature consisted of a
 The restoring magnets were flat `12mm x 3mm` neodymium magnets. The generator stator was split into two pieces: the main piece, which housed the coils and one restoring magnet, and the cap, which held the other restoring magnet and was attached via `3` x `M3 x 20mm` bolts.
 
 <div align="center">
-  <img src="deliverable_submission\Images\generator_side_profile.jpg" alt="Generator Side profile" style="max-width:600px;">
+  <img src="media\generator_side_profile.jpg" alt="Generator Side profile" style="max-width:600px;">
   <p><i>Figure 4: Side profile of the finished generator after the Hercules grant night</i></p>
 </div>
 
@@ -114,7 +114,7 @@ The restoring magnets were flat `12mm x 3mm` neodymium magnets. The generator st
 # Results
 
 <div align="center">
-  <img src="deliverable_submission\Images\trace.png" alt="Generator trace @ 8.81 Hz" style="max-width:600px;">
+  <img src="media\oscilloscope_trace.png" alt="Generator trace @ 8.81 Hz" style="max-width:600px;">
   <p><i>Figure 5: Voltage vs time trace @ 10V per vertical division and 50ms per horizontal division</i></p>
 </div>
 

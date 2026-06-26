@@ -36,10 +36,11 @@ class AxialShakeGenerator:
     
     PHASE = StaticCircuit("phase", 0 * ampere, CircuitConfig.series)
     
-    def __init__(self, parameters: DynamicLoader, travel: Q) -> None:
+    def __init__(self, parameters: DynamicLoader, travel: Q, extras: bool = False) -> None:
         """ Initializes the class & defines dependencies """
         self.params = parameters
         self.travel = travel
+        self.extras = extras
         # Defines the coordinate system and model materials
         self.coordinate_system = CoordinateSystem.AXI_SYMMETRIC
 
@@ -95,11 +96,62 @@ class AxialShakeGenerator:
         
         return slots
     
+    def build_armature_tube(self) -> VectorGeometry:
+        """ Builds the armature tube around the stator """
+        return Builder.rectangle(
+            (self.armature_poles_radius, - self.armature_length / 2),
+            self.params.armature.radial_thickness, self.armature_length
+        )
+    
+    def build_restoring_poles(self) -> VectorGeometry:
+        """ Builds the restoring poles for the stator """
+        core_length = self.armature_length + self.travel * 2
+
+        pole_1 = Builder.rectangle(
+            (0 * mm, - core_length / 2 - self.restoring_pitch), 
+            self.params.restoring_poles.radial_thickness, 
+            self.params.restoring_poles.axial_length
+        )
+
+        pole_2 = Builder.rectangle(
+            (0 * mm, core_length / 2 + self.params.restoring_poles.axial_spacing), 
+            self.params.restoring_poles.radial_thickness, 
+            self.params.restoring_poles.axial_length
+        )
+        
+        return [pole_1, pole_2]
+    
+    def build_stator_tube(
+        self, slots: list[VectorGeometry], restoring: list[VectorGeometry]
+    ) -> VectorGeometry:
+        """ Builds the stator tube around the slots and the restoring magnets """
+        motion_length = self.armature_length + self.travel * 2
+
+        core = Builder.rectangle((0 * mm, - self.stator_encloser_length / 2), self.slot_outer_radius, self.stator_encloser_length)
+        inner = Builder.rectangle((0 * mm, - motion_length / 2), self.stator_inner_radius, motion_length)
+        negative_cutoff = Builder.rectangle((0 * mm, - motion_length / 4 + 0.1 *mm), self.slot_outer_radius + 0.1 * mm, -motion_length)
+        positive_cutoff = Builder.rectangle((0*mm, - motion_length / 4 - 0.1 *mm), self.slot_outer_radius + 0.1 * mm, motion_length)
+        
+        core1 = core.subtract(inner)
+        core2 = core.subtract(inner)
+        core1 = core1.subtract(positive_cutoff)
+        core2 = core2.subtract(negative_cutoff)
+
+        # Subtracts those geometric elements from the core geometry
+        for item in slots + restoring: 
+            core1 = core1.subtract(item)
+        
+        # Subtracts those geometric elements from the core geometry
+        for item in slots + restoring: 
+            core2 = core2.subtract(item)
+            
+        return core1, core2
+    
     def build_boundary(self) -> VectorGeometry:
         """ 
         Builds the boundary shape via tube length with 20% margin axially, 100% radially 
         """
-        max_length = 1.2 * self.tube_length
+        max_length = 1.2 * self.stator_encloser_length
         max_radius = 2 * self.slot_outer_radius
         
         return Builder.rectangle((0 * mm, -max_length / 2), max_radius, max_length)
@@ -122,22 +174,22 @@ class AxialShakeGenerator:
         self.number_slots = self.params.model.number_slots
         self.pole_length = self.params.armature_poles.axial_length
         self.slot_length = self.params.stator_slots.axial_length
-
+        self.restoring_pitch  = (
+            self.params.restoring_poles.axial_spacing + 
+            self.params.restoring_poles.axial_length
+        )
         # Calculates the length of the different components within the assembly
         self.armature_length = self.number_poles * self.pole_length
         self.stator_length = self.pole_length * self.number_slots  
-        self.tube_length = self.armature_length + self.travel * 2 
+        self.stator_encloser_length = self.armature_length + self.travel * 2 + self.restoring_pitch * 2
         
         # Calculates the number of slots within the device
         self.pitch = self.pole_length
 
         # Calculates for radial placement
         self.armature_poles_radius = self.params.armature_poles.radial_thickness
-        self.slot_inner_radius = (
-            self.armature_poles_radius +
-            self.params.stator_core.gap_radial_thickness + 
-            self.params.stator_core.wall_radial_thickness
-        )
+        self.stator_inner_radius = self.armature_poles_radius + self.params.stator_core.gap_radial_thickness
+        self.slot_inner_radius = self.stator_inner_radius + self.params.stator_core.wall_radial_thickness
         self.slot_outer_radius = self.slot_inner_radius + self.params.stator_slots.radial_thickness
         
 
@@ -171,11 +223,15 @@ class ConstructMagnetic:
         slots = generator.build_stator()
         boundary = generator.build_boundary()
         
+        restoring_poles = generator.build_restoring_poles()
+        armature_tube = generator.build_armature_tube()
+        stator_tube1, stator_tube2 = generator.build_stator_tube(slots, restoring_poles)
+        
         # Defines simulation parts via promoting and metadata
         params = generator.params
         parts = []
         
-        # Adds the slots to the domain
+        # # Adds the slots to the domain
         turns = cls.calculate_number_turns(generator)
         for index, slot in enumerate(slots):
             # Sets the phase of slot in pattern [A, A'] or [A, A]
@@ -191,6 +247,7 @@ class ConstructMagnetic:
             
         # Adds the poles to the domain
         armature = []
+        pole_magnetization = 0
         for index, pole in enumerate(poles):
             # Alternate magnetization direction every pole (e.g. NS-SN-NS-SN)
             pole_magnetization = 90 if index % 2 == 0 else - 90
@@ -203,6 +260,29 @@ class ConstructMagnetic:
             pole = Builder.promote_to_part(pole, metadata)
             parts.append(pole)
             armature.append(pole)
+
+        for i, pole in enumerate(restoring_poles):
+            if i == 1:
+                magnetization = -pole_magnetization * nullset
+            else:
+                magnetization = pole_magnetization * nullset
+
+            metadata = MagneticData(
+                generator.STATOR_ID, 
+                generator.armature_material,
+                magnetization=magnetization
+            )
+            parts.append(Builder.promote_to_part(pole, metadata))
+
+        extras = []
+        meta_stator = MagneticData(generator.STATOR_ID, generator.environmental_material)
+        extras.append(Builder.promote_to_part(stator_tube1, meta_stator))
+        extras.append(Builder.promote_to_part(stator_tube2, meta_stator))
+
+        meta_armature = MagneticData(generator.ARMATURE_ID, generator.environmental_material)
+        extras.append(Builder.promote_to_part(armature_tube, meta_armature))
+
+        if generator.extras: parts.extend(extras)
 
         # Overall simulation problem definition
         meta = MagneticData(generator.ENVIRONMENT_ID, generator.environmental_material)

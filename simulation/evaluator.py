@@ -10,6 +10,8 @@ Description:
     reduce numerical complexity.
 """
 
+import matplotlib.pyplot as plt
+
 from math import pi
 from pathlib import Path
 from pyfea.domain.units import Parser
@@ -76,6 +78,7 @@ def simulate_rms_voltage(
     
     t_set = []
     v_set = []
+    z_set = []
 
     # Simulates for two periods
     iteration = 0 
@@ -97,7 +100,8 @@ def simulate_rms_voltage(
         
         t_set.append(t.value)
         v_set.append(induced.value)
-        
+        z_set.append(new_z_axial_position.value)
+
         old_flux_linkage = new_flux_linkage 
         z = new_z_axial_position
         t += time_step
@@ -109,21 +113,21 @@ def simulate_rms_voltage(
     mean_squared = sum(squared_voltages) / len(v_set)
     v_rms = mean_squared ** 0.5
 
-    return (v_rms * volt, [v_set, t_set])
+    return (v_rms * volt, [v_set, t_set, z_set])
 
 
 if __name__ == "__main__":
     # Imports parameters from .uiv parameter file with units
     BASE_DIR = Path(__file__).parent.parent
-    para_dir = BASE_DIR / "parameters.uiv"
-    solver_folder = BASE_DIR / "FEM/outputs"
+    para_dir = BASE_DIR / "simulation/parameters.uiv"
+    solver_folder = BASE_DIR / "simulation/outputs"
 
     # Imports the parameters (value:unit) into memory
     parameters = Parser.open(para_dir)
     model = build_generator(parameters)
 
     resistance = simulate_resistance(solver_folder, model, True)
-    v_rms, [v_set, t_set] = simulate_rms_voltage(solver_folder, model, True)
+    v_rms, [v_set, t_set, z_set] = simulate_rms_voltage(solver_folder, model, True)
     peak_voltage = max(abs(v) for v in v_set) * volt
 
     print("-" * 30)
@@ -131,3 +135,26 @@ if __name__ == "__main__":
     print(f"RMS Voltage:    {v_rms:.4f}")
     print(f"Peak Voltage:   {peak_voltage:.4f}")
     print("-" * 30)
+    
+    print(f"Simulation Complete. Total steps: {len(t_set)}") 
+
+    # Plotting results using shared time axis
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
+
+    # Induced Voltage
+    ax1.plot(t_set, v_set, color='#1f77b4', linewidth=2, label='Phase Induced Voltage')
+    ax1.set_ylabel('Induced Voltage (V)', fontsize=10)
+    ax1.grid(True, linestyle='--', alpha=0.5)
+    ax1.legend(loc='upper right')
+    ax1.set_title('Axial-Shake Generator Simulation Dynamics', fontsize=12, fontweight='bold', pad=10)
+
+    # Displacement Position
+    ax2.plot(t_set, z_set, color='#2ca02c', linewidth=2, label='Axial Position z(t)')
+    ax2.set_xlabel('Time (s)', fontsize=10)
+    ax2.set_ylabel('Position (m)', fontsize=10)
+    ax2.grid(True, linestyle='--', alpha=0.5)
+    ax2.legend(loc='upper right')
+
+    plt.tight_layout()
+    plt.savefig(solver_folder / "induced_voltage_plot.png", dpi=150)
+    plt.show()
