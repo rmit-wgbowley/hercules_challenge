@@ -11,10 +11,10 @@ Color Palette:
 </p>
 
 --- 
-The Hercules Challenge is a co-design consortium challenge available to first-year (first semester) engineers through the mandatory introductory class, "Introduction to Professional Engineering."
+The Hercules Challenge is a co-design consortium challenge available to first-semester, first-year engineers through the mandatory introductory class, "Introduction to Professional Engineering.
 
 > [!IMPORTANT]
-> `The Pantheon` group received a commendation award for work on the IsoPod at the Hercules Challenge night at RMIT. This means that all team members get the chance to join last year's teams to help them.
+> `The Pantheon` consortium received a commendation award for their work on the `IsoPod` at the Hercules Challenge night at RMIT.
 
 ## Overview
 
