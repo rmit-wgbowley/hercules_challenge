@@ -19,7 +19,7 @@ from pyfea import Q, unit_validator, ampere, ohm, volt, second, meter, nullset
 
 from pyfea.domain.units import DynamicLoader
 from pyfea.solver.femm.domains.magnetostatic.solver import FEMMMagnetostaticSolver
-from pyfea.solver.solver_outputs import SolverOutputs, CircuitOptions
+from pyfea.solver.solver_outputs import SolverOutputs, CircuitOptions, ImageOptions
 
 from model.generator import AxialShakeGenerator
 
@@ -68,6 +68,7 @@ def simulate_rms_voltage(
     
     outputs = SolverOutputs()
     outputs.add_circuit(model.PHASE, CircuitOptions.flux_linkage)
+    outputs.add_image(ImageOptions.field_contour)
 
     results = magnetic.solve(outputs)
     old_flux_linkage = results[model.PHASE].flux_linkage

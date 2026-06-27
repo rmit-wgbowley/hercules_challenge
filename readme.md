@@ -82,3 +82,23 @@ This relationship drives one of the main trade-offs: increasing turns raises ind
   <img src="04_media/high_level_topology.png" alt="Generator high-level topology" style="max-width:600px;">
   <p><i>Figure 2: High level electrical machine topology</i></p>
 </div>
+
+> [!note]
+> `N-S` represents an axially magnetized permanent magnet pole. `PA` represents phase A, where `PA+` and `PA-` indicate opposite winding directions.
+
+The high-level topology in figure 2 was selected to enable oscillatory motion through magnetic restoring forces. The additional end poles act as magnetic springs, creating a restoring force when the armature approaches the limits of travel. This allows the armature to return towards the centre position after displacement.
+
+The alternating pole arrangement (`N-S|S-N`) was selected because the transition between opposing poles creates a rapid change in magnetic field along the z-axis, increasing the spatial rate of change of flux linkage:
+
+$$V \propto \frac{d\lambda}{dz}$$
+
+A pole pitch of `10 mm` was selected, matching the pole length and maintaining direct magnetic coupling between adjacent opposing poles. The topology uses four stator slots interacting with four active armature poles, with additional poles placed on each end of the armature to increase usable travel distance. This allows approximately `20 mm` of positive and negative armature displacement while maintaining magnetic coupling between the armature and stator.
+
+Maintaining slot overlap throughout the motion range produces a more consistent induced voltage waveform, where the primary amplitude is dominated by the mechanical velocity term:
+
+$$V \propto \frac{dz}{dt}$$
+
+The symmetric pole arrangement also reduces unwanted harmonic content compared with asymmetric topologies. Finally, no high-permeability materials were introduced into the armature or stator structure. The stator consists of copper windings, while the magnetic poles use `N52 Neodymium` permanent magnets.
+
+
+##

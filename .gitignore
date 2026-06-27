@@ -1,6 +1,5 @@
-/simulatiojn/FEM/outputs
-
 *.pyc
 *.log
-/simulation/outputs
+
 old_readme.md
+/01_simulation/outputs
