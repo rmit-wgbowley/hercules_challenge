@@ -40,7 +40,7 @@ In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable
   <a href="01_simulation/parameters.uiv">
     <img src="04_media/demonstrator_cross_section.png" alt="Generator cross section" style="max-width:600px;">
   </a>
-  <p><i>Figure 2: Cross-sectional analysis: <a href="01_simulation/parameters.uiv">Click here for parameters</a></i></p>
+  <p><i>Figure 1: Cross-sectional analysis: <a href="01_simulation/parameters.uiv">Click here for parameters</a></i></p>
 </div>
 
 The generator consists of an armature (purple) made of poles (magnets), a stator (light blue) made of slots (coils), and restoring magnets which act as magnetic springs that allow the armature to build velocity from the user shaking the device with their forearm muscles.
@@ -78,6 +78,8 @@ This relationship drives one of the main trade-offs: increasing turns raises ind
 
 ## Design & Topology
 
-```
-TOP (N) (3mm) → (20mm) → Core (N-S|S-N|N-S|S-N|N-S|S-N|N-S|S-N) (80mm) → (20mm) → BOTTOM (N) (3mm)
-```
+<div align="center">
+  <img src="04_media/high_level_topology.png" alt="Generator high-level topology" style="max-width:600px;">
+  <p><i>Figure 2: High level electrical machine topology</i></p>
+</div>
+
