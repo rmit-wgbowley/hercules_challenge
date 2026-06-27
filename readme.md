@@ -76,4 +76,8 @@ $$P = \frac{V_{\text{rms}}^2}{R_{\text{internal}}}$$
 
 This relationship drives one of the main trade-offs: increasing turns raises induced voltage but also increases resistance due to longer wire length. The optimal design maximizes `V^2/R`, not just peak voltage.
 
-## Design
+## Design & Topology
+
+```
+TOP (N) (3mm) -> Core (N-S|S-N|N-S|S-N|N-S|S-N|N-S|S-N) (80mm) -> BOTTOM (N) (3mm)
+```
