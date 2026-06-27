@@ -79,5 +79,5 @@ This relationship drives one of the main trade-offs: increasing turns raises ind
 ## Design & Topology
 
 ```
-TOP (N) (3mm)  →  (20mm)  →  Core (N-S|S-N|N-S|S-N|N-S|S-N|N-S|S-N) (80mm)  →  (20mm)  →  BOTTOM (N) (3mm)
+TOP (N) (3mm) → (20mm) → Core (N-S|S-N|N-S|S-N|N-S|S-N|N-S|S-N) (80mm) → (20mm) → BOTTOM (N) (3mm)
 ```
