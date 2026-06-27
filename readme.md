@@ -82,4 +82,3 @@ This relationship drives one of the main trade-offs: increasing turns raises ind
   <img src="04_media/high_level_topology.png" alt="Generator high-level topology" style="max-width:600px;">
   <p><i>Figure 2: High level electrical machine topology</i></p>
 </div>
-
