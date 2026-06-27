@@ -22,3 +22,13 @@ The Hercules Challenge is a co-design consortium challenge available to first-se
 ![Domain](https://img.shields.io/badge/Domain-Energy_Harvesting-F3F4F4?style=flat-square&color=0DFDF7)
 ![Power](https://img.shields.io/badge/Output-0.43W-F3F4F4?style=flat-square&color=0DFDF7)
 ![EM](https://img.shields.io/badge/Physics-Electromagnetics-F3F4F4?style=flat-square&logo=physics&logoColor=F3F4F4)
+
+The `IsoPod` is a pill system that reminds users when to take their medication via e-ink display on the cylindrical bi-sector face of the device, providing a simple visual reminder.
+
+<p align="center">
+  <img src="04_media/isopod_model.png" style="max-width:600px;">
+  <br>
+  <em>Figure 1: Side profile of the IsoPod Device</em>
+</p>
+
+This repository focuses on the design, simulation, construction, and validation of the `axial shake generator` at the device's core. The generator converts intentional shaking motion into electrical energy via magnetic induction, which charges the IsoPod's Li-Po battery. This extends battery life, or with enough motion, can enable complete self-reliance.
