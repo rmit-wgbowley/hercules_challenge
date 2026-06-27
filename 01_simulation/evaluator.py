@@ -68,7 +68,6 @@ def simulate_rms_voltage(
     
     outputs = SolverOutputs()
     outputs.add_circuit(model.PHASE, CircuitOptions.flux_linkage)
-    outputs.add_image(ImageOptions.field_contour)
 
     results = magnetic.solve(outputs)
     old_flux_linkage = results[model.PHASE].flux_linkage

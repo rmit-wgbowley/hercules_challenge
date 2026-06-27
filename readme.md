@@ -76,6 +76,13 @@ $$P = \frac{V_{\text{rms}}^2}{R_{\text{internal}}}$$
 
 This relationship drives one of the main trade-offs: increasing turns raises induced voltage but also increases resistance due to longer wire length. The optimal design maximizes `V^2/R`, not just peak voltage.
 
+> [!important]
+> The generator design was constrained by the IsoPod system requirements:
+> - Cylindrical form factor, less than `12.5 mm` radial thickness
+> - Human-powered input motion (reasonable frequency and acceleration)
+> - Low-maintenance energy harvesting
+> - Easy to construct with basic tools
+
 ## Design & Topology
 
 <div align="center">
@@ -99,6 +106,5 @@ Maintaining slot overlap throughout the motion range produces a more consistent 
 $$V \propto \frac{dz}{dt}$$
 
 The symmetric pole arrangement also reduces unwanted harmonic content compared with asymmetric topologies. Finally, no high-permeability materials were introduced into the armature or stator structure. The stator consists of copper windings, while the magnetic poles use `N52 Neodymium` permanent magnets.
-
 
 ##
