@@ -1,0 +1,23 @@
+<!--
+Color Palette:
+- #F3F4F4
+- #0DFDF7
+-->
+
+<p align="center">
+  <img src="04_media/quasi_transient_magnitude_of_b.gif" syle="max-width:600px;">
+  <br>
+  <em>Axial Shake Powered Pill System – Electromechanical Design of the IsoPod by <a href="https://github.com/wgbowley">William Bowley</a></em>
+</p>
+
+--- 
+The Hercules Challenge is a co-design consortium challenge available to first-year (first semester) engineers through the mandatory introductory class, "Introduction to Professional Engineering."
+
+> [!IMPORTANT]
+> `The Pantheon` group received a commendation award for work on the IsoPod at the Hercules Challenge night at RMIT. This means that all team members get the chance to join last year's teams to help them.
+
+## Overview
+
+![MIT License](https://img.shields.io/badge/License-MIT-F3F4F4?style=flat-square&logoColor=black)
+![Domain](https://img.shields.io/badge/Domain-Hardware-F3F4F4?style=flat-square&color=0DFDF7)
+![EM](https://img.shields.io/badge/Physics-Electromagnetics-F3F4F4?style=flat-square&logo=physics&logoColor=F3F4F4)
