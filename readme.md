@@ -16,7 +16,7 @@ The Hercules Challenge is a co-design consortium challenge available to first-se
 > [!IMPORTANT]
 > `The Pantheon` consortium received a commendation award for their work on the `IsoPod` at the Hercules Challenge night at RMIT.
 
-## Overview
+# Overview
 
 ![MIT License](https://img.shields.io/badge/License-MIT-F3F4F4?style=flat-square&logoColor=black)
 ![Domain](https://img.shields.io/badge/Domain-Energy_Harvesting-F3F4F4?style=flat-square&color=0DFDF7)
@@ -29,9 +29,12 @@ This repository focuses on the design, simulation, construction, and validation 
 
 ### Why generate electrical?
 
-In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical energy. Alongside this, the device helps compensate for human memory limitations through consistent and precise medication reminders tasks where embedded systems excel.
+In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical energy. Alongside this, the device helps compensate for human memory limitations through consistent and precise medication reminders, tasks where embedded systems excel.
 
-## Axial Shake Generator
+# Axial Shake Generator
+
+> [!tip]
+> The following sections describe the generator topology, electromagnetic model, design optimization, simulation workflow, construction, and validation
 
 <div align="center">
   <a href="01_simulation/parameters.uiv">
@@ -42,23 +45,28 @@ In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable
 
 The generator consists of an armature (purple) made of poles (magnets), a stator (light blue) made of slots (coils), and restoring magnets which act as magnetic springs that allow the armature to build velocity from the user shaking the device with their forearm muscles.
 
-### Electromagnetics
+## Electromagnetics
 
-An ASG produces electricity via the interaction between a slot and a pole. When a pole moves axially through a slot, it produces an induced voltage within that slot due to the changing magnetic field generating a changing electric field. The direction of that field is opposite to the direction of motion of the pole. These ideas come together to form `Faraday's Law of Induction`:
+An ASG produces electricity via the interaction between a slot and a pole. When a pole moves axially through a slot, it produces an induced voltage within that slot due to the changing magnetic field generating a changing electric field. The induced electric field opposes the change in magnetic flux that produced it, a consequence of Lenz's law. These ideas come together to form `Faraday's Law of Induction`:
 
 $$V = -N\frac{d\Phi}{dt} \implies -\frac{d\lambda}{dt}$$
 
-where $λ = N\Phi$ is the flux linkage between the slot and pole. Flux linkage can be thought of as the stickiness factor. The higher the linkage, the more the system resists changes. Luckily, using related rates, the two main parameters appear:
+where $λ = N\Phi$ is the flux linkage between the slot and pole. Flux linkage can be thought of as the magnitude of how strongly the magnetic field links with the winding (turns in a slot). Higher linkage generally means the system can produce a larger induced voltage for the same change in armature position.
+
+Luckily, using related rates, the two main parameters appear:
 
 $$V_{\text{induced}} = -\frac{d\lambda}{dt} \implies -\frac{d\lambda}{dz} \cdot \frac{dz}{dt}$$
 
 The first term is the derivative of flux linkage over the z-axis (magnetic design), and the second term is the z-axis velocity (mechanical input). These can be analytically approximated as:
 
 > [!important]
-> Flux linkage can be approximated analytically for intuition, while the final flux linkage is obtained by FEM.
+> Flux linkage can be approximated analytically for intuition. The final flux linkage was obtained using Finite Element Analysis (FEA).
 
 $$\frac{dz}{dt} = A \omega \cos(\omega t + \phi)$$
-$$\frac{d\lambda}{dz} = \frac{d}{dz} (\mu H \cos(z)) = -\mu H \sin(z)$$
+$$\frac{d\lambda}{dz} = \frac{d}{dz} (B \cos(z)) \implies -\mu H \sin(z)$$
+
+> [!info]
+> For a simple magnetic circuit, magnetic flux density can be related to magnetic field strength by `B = μH`, where `B` is the magnetic flux density, `H` is the magnetic field intensity, and `μ` is the permeability, the ability of a material to support magnetic flux.
 
 These two derivatives expose the important mechanics of the system. Increasing acceleration `A` and frequency `ω` may increase induced voltage, but these are constrained by the user's physical abilities. Whereas the permeability `μ` and `H` may increase the induced voltage while generally not being constrained by the user's physical abilities.
 
@@ -68,4 +76,4 @@ $$P = \frac{V_{\text{rms}}^2}{R_{\text{internal}}}$$
 
 This relationship drives one of the main trade-offs: increasing turns raises induced voltage but also increases resistance due to longer wire length. The optimal design maximizes `V^2/R`, not just peak voltage.
 
-### Design
+## Design
