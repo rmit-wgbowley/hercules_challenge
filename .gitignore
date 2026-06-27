@@ -3,3 +3,4 @@
 *.pyc
 *.log
 /simulation/outputs
+old_readme.md

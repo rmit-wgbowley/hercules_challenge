@@ -2,8 +2,14 @@
 Filename: generator.py
 
 Description:
-    Magnetic model of a axial_shake generator for usage
+    Magnetic model of an axial_shake generator for usage
     in FEM simulation.
+    
+    NOTE: 
+    Assumes even number of poles within the armature.
+    To enable an odd number of poles, you would need to edit
+    the metadata in the ConstructMagnetic section for 
+    poles and the restoring magnets.
 """
 
 from math import ceil
@@ -19,6 +25,7 @@ from pyfea.domain.geometry.domain import Domain, BoundaryType
 from pyfea.solver.solver_interface import BaseSolver, MagneticSolver
 from pyfea.domain.circuits.builder import StaticCircuit, Configuration as CircuitConfig
 from pyfea.domain.geometry.elements.metadata import MagneticData
+
 
 class ModelError(Exception):
     """ Exception for tubular motor modelling errors """
@@ -124,16 +131,20 @@ class AxialShakeGenerator:
     def build_stator_tube(
         self, slots: list[VectorGeometry], restoring: list[VectorGeometry]
     ) -> VectorGeometry:
-        """ Builds the stator tube around the slots and the restoring magnets """
+        """ Builds the two half stator tubes around the slots and the restoring magnets """
         motion_length = self.armature_length + self.travel * 2
 
         core = Builder.rectangle((0 * mm, - self.stator_encloser_length / 2), self.slot_outer_radius, self.stator_encloser_length)
         inner = Builder.rectangle((0 * mm, - motion_length / 2), self.stator_inner_radius, motion_length)
+
         negative_cutoff = Builder.rectangle((0 * mm, - motion_length / 4 + 0.1 *mm), self.slot_outer_radius + 0.1 * mm, -motion_length)
         positive_cutoff = Builder.rectangle((0*mm, - motion_length / 4 - 0.1 *mm), self.slot_outer_radius + 0.1 * mm, motion_length)
-        
+
+        # Cut the core material out for the armature
         core1 = core.subtract(inner)
         core2 = core.subtract(inner)
+
+        # Cut the other out of it.
         core1 = core1.subtract(positive_cutoff)
         core2 = core2.subtract(negative_cutoff)
 

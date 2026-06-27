@@ -7,9 +7,9 @@ unit_frame: si_metric.ut
 
 # The geometry consists of a stator (coils) and armature (magnets).
 # The simulation itself is a magneto-electro-mechanical model using the 
-# axial-symmetric coordinate system (Z-R) (Axial-Radial)
+# axial-symmetric coordinate system (Z-R) (Axial-Radial).
 
-# Magnetics is calculated using FEMMMagnetostaticSolver, electro and mechanical domains
+# Magnetics are calculated using FEMMMagnetostaticSolver, while the electro and mechanical domains
 # are lumped parameter based.
 
 [numerical]
@@ -25,7 +25,7 @@ travel_factor: 2
 shaking_frequency: 8.8 (s^-1)
 
 [stator_core]
-# material: "ABS" | isn't taken into consideration during simulation (AIR)
+# material: "ABS" | not taken into consideration during simulation (AIR)
 gap_radial_thickness: 2 m(m)
 wall_radial_thickness: 0.5 m(m)
 
@@ -53,5 +53,5 @@ axial_length: 3 m(m)
 axial_spacing: 5 m(m)
 
 [armature]
-# material: "carbon fibre" | isn't taken into consideration during simulation (AIR)
+# material: "carbon fibre" | not taken into consideration during simulation (AIR)
 radial_thickness: 1 m(m)

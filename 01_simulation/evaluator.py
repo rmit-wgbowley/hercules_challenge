@@ -2,12 +2,12 @@
 Filename: evaluator.py
 
 Description:
-    Axial-shake generator using pyfea for magnetics and lumped 
-    parameter model for electro and mechanical domains.
+    Axial-shake generator using PyFEA for magnetics and a lumped 
+    parameter model for the electro and mechanical domains.
     
     NOTE:
     Uses a simplified model for the shaking from the human to 
-    reduce numerical complexity.
+    reduce numerical complexity. Hence, efficiency cannot be quantified.
 """
 
 import matplotlib.pyplot as plt
@@ -119,8 +119,8 @@ def simulate_rms_voltage(
 if __name__ == "__main__":
     # Imports parameters from .uiv parameter file with units
     BASE_DIR = Path(__file__).parent.parent
-    para_dir = BASE_DIR / "simulation/parameters.uiv"
-    solver_folder = BASE_DIR / "simulation/outputs"
+    para_dir = BASE_DIR / "01_simulation/parameters.uiv"
+    solver_folder = BASE_DIR / "01_simulation/outputs"
 
     # Imports the parameters (value:unit) into memory
     parameters = Parser.open(para_dir)
