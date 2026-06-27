@@ -33,7 +33,7 @@ In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable
 
 # Axial Shake Generator
 
-> [!tip]
+> [!note]
 > The following sections describe the generator topology, electromagnetic model, design optimization, simulation workflow, construction, and validation
 
 <div align="center">
@@ -65,7 +65,7 @@ The first term is the derivative of flux linkage over the z-axis (magnetic desig
 $$\frac{dz}{dt} = A \omega \cos(\omega t + \phi)$$
 $$\frac{d\lambda}{dz} = \frac{d}{dz} (B \cos(z)) \implies -\mu H \sin(z)$$
 
-> [!info]
+> [!note]
 > For a simple magnetic circuit, magnetic flux density can be related to magnetic field strength by `B = μH`, where `B` is the magnetic flux density, `H` is the magnetic field intensity, and `μ` is the permeability, the ability of a material to support magnetic flux.
 
 These two derivatives expose the important mechanics of the system. Increasing acceleration `A` and frequency `ω` may increase induced voltage, but these are constrained by the user's physical abilities. Whereas the permeability `μ` and `H` may increase the induced voltage while generally not being constrained by the user's physical abilities.
