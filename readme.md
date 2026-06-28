@@ -33,9 +33,6 @@ In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable
 
 # Axial Shake Generator
 
-> [!note]
-> The following sections describe the generator topology, electromagnetic model, design optimization, simulation workflow, construction, and validation
-
 <div align="center">
   <a href="01_simulation/parameters.uiv">
     <img src="04_media/demonstrator_cross_section.png" alt="Generator cross section" style="max-width:600px;">
