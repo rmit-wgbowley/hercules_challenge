@@ -130,8 +130,8 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 
 > [!IMPORTANT]
 > The model was configured with the following parameters:
-> - Temperature: `293.15 K`, Time step: `200 us`
-> - Mechanical Shaking Frequency: `2.2 Hz`, Electrical Shaking Frequency: `8.8 Hz`
+> - Temperature: `293.15 K`, Time step: `1ms`
+> - Mechanical Shaking Frequency: `8.81 Hz`, Electrical Shaking Frequency: `35.2 Hz`
 > - peak-to-peak travel: `40 mm`
 > - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
 > - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.47 ∅`, Turns: `184`
@@ -143,17 +143,17 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 
 > [!IMPORTANT]
 > The quasi-transient simulation predicted:
-> - Time: `0.11 s`, Time steps: `112`
-> - Peak voltage: `1.31 V`, RMS Voltage: `0.68 V` 
-> - Positive Rate: `35.10 V/s`, Negative Rate: `-49.57 V/s`
-> - Resistance: `22.54 Ω`, Power: `20.3 mW` 
+> - Time: `0.228 s`, Time steps: `228`
+> - Peak voltage: `5.161 V`, RMS Voltage: `2.696 V` 
+> - Positive Rate: `486.06 V/s`, Negative Rate: `-844.25 V/s`
+> - Resistance: `22.54 Ω`, Power: `0.323 W` 
 
 <div align="center">
-  <img src="04_media/FEM_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
+  <img src="04_media/FEM_simple_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
   <p><i>Figure 4: Simulated induced voltage vs time and position vs time</i></p>
 </div>
 
-The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine. Solver assumptions can be found [here](03_data/assumptions_printout.md).
+The parameter file can be found [here](01_simulation/01_simple_motion/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine. Solver assumptions can be found [here](03_data/assumptions_printout.md).
 
 ## Construction
 
@@ -165,31 +165,36 @@ The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator 
 
 <div align="center">
   <img src="04_media/generator_side_profile.jpg" alt="Generator Side profile" style="max-width:600px;">
-  <p><i>Figure 5: Side profile of the finished generator after the Hercules grant night</i></p>
+  <p><i>Figure 5: Side profile (Construction)</i></p>
 </div>
 
 
 ## Results
 
-The completed generator was tested by hand-shaking at a measured electrical frequency of `8.81 Hz` and hence mechanical frequency of `2.2 Hz` (the 4 coils produce 4 cycles per mechanical oscillation). The open-circuit voltage was recorded using an oscilloscope:
+The completed generator was tested by hand-shaking at a measured fundamental mechanical frequency of `8.81 Hz` with a electrical frequency of `35.2 Hz`
+(the 4 coils produce 4 cycles per mechanical oscillation). The open-circuit voltage was recorded using an oscilloscope:
+
 
 > [!IMPORTANT]
 > The oscilloscope measurements:
 > - Positive Peak: `16.8 V`, Negative Peak: `-16.4 V`
-> - Positive Rate: `131 V/s`, Negative Rate: `-246 V/s`
+> - Positive Rate: `131 V/s`, Negative Rate: `-246 V/s` (Slew Rate)
 > - V_RMS(AV): `3.47 V`, V_RMS(PEAK): `3.63 V`
 > - Resistance: `27.8 Ω`, Power: `0.43-0.47 W`
+
+> [!NOTE]
+> Slew rate can be effected by probe loading due to parasitic capacitance and inductance. Hence `dv/dt` may be slowed due to the `LRC` circuit formed.
 
 <div align="center">
   <img src="04_media/oscilloscope_trace.png" alt="Oscilloscope trace" style="max-width:600px;">
   <p><i>Figure 6: Voltage vs time trace @ 10V/div vertical, 50ms/div horizontal</i></p>
 </div>
 
-The measured waveform shown in Figure 6 has a similar shape to the predicted waveform in Figure 4. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This could be attributed to gravity assisting downward acceleration while opposing upward motion.
+The measured waveform shown in Figure 6 has a similar shape to the predicted waveform in Figure 4. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This may be due to gravity assisting downward acceleration while opposing upward motion.
 
 # Validation
 
-The simulated power output was `20.3 mW` whereas the measured power was `0.43-0.47 W`, which is a significant difference of `21.5x` The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
+The simulated power output was `0.323 W` whereas the measured power was `0.43-0.47 W`, which is within 25% of the measured value. The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
 
 The simulation used a higher mechanical frequency but produced lower peak voltages. If the prototype's armature acceleration was much higher than expected, the armature was likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
 
@@ -207,6 +212,55 @@ $$F_{\text{shaking}} = am\sin(\omega t + \phi)$$
 
 One approach would be to model the armature velocity as:
 
-$$\frac{dz}{dt} = \int \frac{F_{\text{magnetic}} + F_{\text{shaking}}}{m} \, dt$$
+$$\frac{dz}{dt} = \int \frac{F_{\text{magnetic}} + F_{\text{shaking}}}{m} \ dt$$
+
+> [!Note]
+> Euler method was used to integrate from acceleration to z-position, the stability was not formalized.
 
 However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stress tensor, the $F_{\text{magnetic}}$ term will be obtained directly from the solver rather than using finite difference of the magnetic energy density over the z-axis. This decouples the solution from the displacement output, removing dynamic step sizes and leading to a more stable solution.
+
+## Simulation Results 
+
+> [!IMPORTANT]
+> The model was configured with the following parameters:
+> - Temperature: `293.15 K`, Time step: `1 ms`
+> - Mechanical Shaking Frequency: `2.2 Hz`, Electrical Shaking Frequency: `8.8 Hz`
+> - Acceleration: `75 m/s²`, peak-to-peak travel: `40 mm`
+> - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
+> - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.47 ∅`, Turns: `184`
+
+> [!IMPORTANT]
+> The quasi-transient simulation predicted:
+> - Time: `0.228 s`, Time steps: `228`
+> - Peak voltage: `12.35 V`, RMS Voltage: `3.44 V` 
+> - Positive Rate: `634.76 V/s`, Negative Rate: `-2.32 kV/s`
+> - Resistance: `22.54 Ω`, Power: `0.526 W` 
+
+<div align="center">
+  <img src="04_media/FEM_advance_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
+  <p><i>Figure 6: New simulation results (Simulation Results)</i></p>
+</div>
+
+The parameter file can be found [here](01_simulation/02_advance_motion/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine. Solver assumptions can be found [here](03_data/assumptions_printout.md).
+
+# Conclusion
+
+
+
+
+
+### Bibtex Citation:
+
+```
+@misc{Bowley_2024,
+  author = {Bowley, William},
+  title = {{IsoPod: Axial Shake Generator}},
+  url = {https://github.com/rmit-wgbowley/isopod-generator},
+  year = {2024},
+  note = {
+    GitHub repository,
+    Electromagnetic Subsystem Of The Isopod
+  },
+  license = {MIT}
+}
+```

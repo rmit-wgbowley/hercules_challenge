@@ -6,8 +6,9 @@ Description:
     parameter model for the electro and mechanical domains.
     
     NOTE:
-    Uses a simplified model for the shaking from the human to 
-    reduce numerical complexity. Hence, efficiency cannot be quantified.
+    This simulation uses oscillating function for the human
+    shaking motion and also uses maxwell stress tensor to calculate
+    the du/dz for the restoring motion.
 """
 
 import matplotlib.pyplot as plt
@@ -15,11 +16,11 @@ import matplotlib.pyplot as plt
 from math import pi
 from pathlib import Path
 from pyfea.domain.units import Parser
-from pyfea import Q, unit_validator, ampere, ohm, volt, second, meter, nullset
+from pyfea import Q, ampere, volt, second, meter, newton, nullset
 
 from pyfea.domain.units import DynamicLoader
 from pyfea.solver.femm.domains.magnetostatic.solver import FEMMMagnetostaticSolver
-from pyfea.solver.solver_outputs import SolverOutputs, CircuitOptions, ImageOptions
+from pyfea.solver.solver_outputs import SolverOutputs, CircuitOptions, MagneticOptions
 
 from model.generator import AxialShakeGenerator
 
@@ -32,13 +33,12 @@ def build_generator(parameters: DynamicLoader) -> AxialShakeGenerator:
     return model
 
 
-@unit_validator(ohm)
-def simulate_resistance(folder: Path, model: AxialShakeGenerator, verbose: bool = False) -> Q:
+def pre_simulation(folder: Path, model: AxialShakeGenerator, verbose: bool = False) -> Q:
     """ Simulate the resistance of the generator using a test current """
     magnetic = FEMMMagnetostaticSolver(folder, verbose=verbose)
 
     # Builds magnetic domain & translates it into solver
-    domain, _ = model.construct_domain(magnetic)
+    domain, armature = model.construct_domain(magnetic)
     magnetic.setup(domain)
     model.PHASE.current = 0.1 * ampere
     magnetic.update_current(model.PHASE)
@@ -46,17 +46,20 @@ def simulate_resistance(folder: Path, model: AxialShakeGenerator, verbose: bool 
     # Selecting outputs (induced = -d(Flux linkage)/dt)
     outputs = SolverOutputs()
     outputs.add_circuit(model.PHASE, CircuitOptions.resistance)
-
+    outputs.add_magnetic(armature[0], MagneticOptions.volume)
+    
     # Initial flux_linkage
     results = magnetic.solve(outputs)
     resistance = results[model.PHASE].resistance
-
+    volume = results[armature[0]].volume
+    
+    mass = volume * model.armature_material.NdFeB.physical.density
+    
     model.PHASE.current = 0.0 * ampere
-    return resistance
-
+    return resistance, mass
 
 def simulate_rms_voltage(
-    folder: Path, model: AxialShakeGenerator, verbose: bool = False
+    folder: Path, model: AxialShakeGenerator, mass: Q, verbose: bool = False
 ) -> tuple[Q, list]:
     """ Simulates the v_rms of the generator using co-simulation"""
     parameters = model.params
@@ -68,55 +71,72 @@ def simulate_rms_voltage(
     
     outputs = SolverOutputs()
     outputs.add_circuit(model.PHASE, CircuitOptions.flux_linkage)
+    outputs.add_circuit(armature[0], MagneticOptions.force_stress_tensor)
 
     results = magnetic.solve(outputs)
     old_flux_linkage = results[model.PHASE].flux_linkage
 
     # Simulation Loop
     time_step = parameters.numerical.time_step
-    t, z, v = 0 * second, 0 * meter, 0 * volt
+    magnetic_force = 0 * newton
+    z_velocity, z_position = 0 * (meter / second), 0 * meter
+    previous_z_position = 0 * meter
+    t, last_induced = 0 * second, 0 * volt
     
-    t_set = []
-    v_set = []
-    z_set = []
-    
-    slew_rate_pos = []
-    slew_rate_neg = []
+    t_set, v_set, z_set = [], [], []
+    slew_rate_pos, slew_rate_neg = [], []
     
     # Simulates for two periods
     iteration = 0 
-    while t < 2/parameters.model.shaking_frequency:
-        if iteration % 10 == 0 and verbose == True:
-            print(f"UPDATED | Time: {t:.3f}, Pos: {z:.3f}")
+    while t < 2 / parameters.model.shaking_frequency:
+        if iteration % 10 == 0 and verbose:
+            print(f"UPDATED | Time: {t:.3f}, Pos: {z_position:.3f}")
     
         # Moves elements within the simulation & gets new linkage
-        new_z_axial_position = - model.travel * (2*pi*parameters.model.shaking_frequency*t).sin()
-        z_delta = new_z_axial_position - z
+        shake_force = parameters.model.acceleration * mass
+        shake_force = shake_force * (2 * pi * parameters.model.shaking_frequency * t).sin()
         
+        force = shake_force + magnetic_force
+        acceleration = force / mass
+        z_velocity = z_velocity + acceleration * time_step
+        z_position = z_position + z_velocity * time_step
+
+        # Only clamp if beyond boundary AND force is still pushing outward
+        if z_position > model.travel and force > 0 * newton:
+            z_position = model.travel
+            z_velocity = 0 * (meter / second)
+        elif z_position < -model.travel and force < 0 * newton:
+            z_position = -model.travel
+            z_velocity = 0 * (meter / second)
+
+        z_delta = z_position - previous_z_position
+        previous_z_position = z_position
+
         magnetic.move_element(armature[0], z_delta, 90 * nullset)
+
         results = magnetic.solve(outputs)
         new_flux_linkage = results[model.PHASE].flux_linkage
-        
+        magnetic_force = results[armature[0]].force_stress_tensor[0]
+    
         # Calculates the induced voltage within the phase
         dF = new_flux_linkage - old_flux_linkage
-        induced = - dF/time_step
+        induced = - dF / time_step
         
         # Calculates the slew rate within the phase
-        dv = induced - v
-        slew_rate = dv/time_step
+        dv = induced - last_induced
+        slew_rate = dv / time_step
         
-        if slew_rate < 0 * (volt/second):
+        if slew_rate < 0 * (volt / second):
             slew_rate_neg.append(slew_rate.stripped)
         else:
             slew_rate_pos.append(slew_rate.stripped)
         
         t_set.append(t.value)
         v_set.append(induced.value)
-        z_set.append(new_z_axial_position.value)
+        z_set.append(z_position.value)
 
         old_flux_linkage = new_flux_linkage 
-        z = new_z_axial_position
-        v = induced
+        last_induced = induced
         t += time_step
         
         iteration += 1       
@@ -127,23 +147,24 @@ def simulate_rms_voltage(
     v_rms = mean_squared ** 0.5
 
     # Calculates the slew rate
-    avg_pos = sum(slew_rate_pos) / len(slew_rate_pos)
-    avg_neg = sum(slew_rate_neg) / len(slew_rate_neg)
+    avg_pos = sum(slew_rate_pos) / len(slew_rate_pos) if slew_rate_pos else 0
+    avg_neg = sum(slew_rate_neg) / len(slew_rate_neg) if slew_rate_neg else 0
     
-    return (v_rms * volt, avg_pos * (volt/second), avg_neg * (volt/second), [v_set, t_set, z_set])
+    return (v_rms * volt, avg_pos * (volt / second), avg_neg * (volt / second), [v_set, t_set, z_set])
+
 
 if __name__ == "__main__":
     # Imports parameters from .uiv parameter file with units
     BASE_DIR = Path(__file__).parent.parent
-    para_dir = BASE_DIR / "01_simple_motion/parameters.uiv"
-    solver_folder = BASE_DIR / "01_simple_motion/outputs"
+    para_dir = BASE_DIR / "02_advance_motion/parameters.uiv"
+    solver_folder = BASE_DIR / "02_advance_motion/outputs"
 
     # Imports the parameters (value:unit) into memory
     parameters = Parser.open(para_dir)
     model = build_generator(parameters)
 
-    resistance = simulate_resistance(solver_folder, model)
-    v_rms, slew_pos, slew_neg, [v_set, t_set, z_set] = simulate_rms_voltage(solver_folder, model, True)
+    resistance, mass = pre_simulation(solver_folder, model)
+    v_rms, slew_pos, slew_neg, [v_set, t_set, z_set] = simulate_rms_voltage(solver_folder, model, mass, True)
     
     # Calculations
     peak_voltage = max(abs(v) for v in v_set) * volt

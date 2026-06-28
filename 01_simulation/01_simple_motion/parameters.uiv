@@ -14,7 +14,6 @@ unit_frame: si_metric.ut
 
 [numerical]
 time_step: 1 m(s)
-smooth_window: 5
 
 [model]
 environmental_temperature: 293.15 (K)
@@ -23,7 +22,8 @@ number_pairs: 4
 number_slots: 4
 
 travel_factor: 2
-shaking_frequency: 2.2 (s^-1)
+shaking_frequency: 8.81 (s^-1)
+
 
 [stator_core]
 # material: "ABS" | not taken into consideration during simulation (AIR)

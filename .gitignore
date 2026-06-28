@@ -1,5 +1,6 @@
 *.pyc
 *.log
 
-old_readme.md
-/01_simulation/outputs
+/01_simulation/01_simple_motion/outputs
+/01_simulation/02_advance_motion/outputs
+
