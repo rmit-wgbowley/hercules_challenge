@@ -1,5 +1,6 @@
-pyfea.log
 *.pyc
-/poc_axial_generator/FEM/outputs
+*.log
 
-*.zip
+/01_simulation/01_simple_motion/outputs
+/01_simulation/02_advance_motion/outputs
+
