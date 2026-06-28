@@ -27,7 +27,7 @@ from model.generator import AxialShakeGenerator
 def build_generator(parameters: DynamicLoader) -> AxialShakeGenerator:
     """ Builds the generator based on the parameter file"""
     travel = 2 * parameters.armature_poles.axial_length
-    model = AxialShakeGenerator(parameters, travel)
+    model = AxialShakeGenerator(parameters, travel, True)
     
     return model
 
@@ -68,7 +68,8 @@ def simulate_rms_voltage(
     
     outputs = SolverOutputs()
     outputs.add_circuit(model.PHASE, CircuitOptions.flux_linkage)
-
+    outputs.add_image(ImageOptions.field_contour)
+    
     results = magnetic.solve(outputs)
     old_flux_linkage = results[model.PHASE].flux_linkage
 

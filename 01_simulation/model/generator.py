@@ -136,17 +136,14 @@ class AxialShakeGenerator:
 
         core = Builder.rectangle((0 * mm, - self.stator_encloser_length / 2), self.slot_outer_radius, self.stator_encloser_length)
         inner = Builder.rectangle((0 * mm, - motion_length / 2), self.stator_inner_radius, motion_length)
-
-        negative_cutoff = Builder.rectangle((0 * mm, - motion_length / 4 + 0.1 *mm), self.slot_outer_radius + 0.1 * mm, -motion_length)
-        positive_cutoff = Builder.rectangle((0*mm, - motion_length / 4 - 0.1 *mm), self.slot_outer_radius + 0.1 * mm, motion_length)
-
-        # Cut the core material out for the armature
-        core1 = core.subtract(inner)
-        core2 = core.subtract(inner)
+        core = core.subtract(inner)
+        
+        negative_cutoff = Builder.rectangle((0 * mm, - motion_length / 2+ 0.2 * mm), self.slot_outer_radius + 0.1 * mm, -self.stator_encloser_length)
+        positive_cutoff = Builder.rectangle((0*mm, - motion_length / 2), self.slot_outer_radius + 0.1 * mm, self.stator_encloser_length)
 
         # Cut the other out of it.
-        core1 = core1.subtract(positive_cutoff)
-        core2 = core2.subtract(negative_cutoff)
+        core1 = core.subtract(positive_cutoff)
+        core2 = core.subtract(negative_cutoff)
 
         # Subtracts those geometric elements from the core geometry
         for item in slots + restoring: 
