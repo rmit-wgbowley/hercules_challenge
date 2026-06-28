@@ -121,7 +121,7 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 
 ## Simulation Results
 
-The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation), written in Python using the `pyfea` solver-adapter engine.
+The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine.
 
 > [!IMPORTANT]
 > The model was configured with the following parameters:
