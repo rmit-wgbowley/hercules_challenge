@@ -121,8 +121,6 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 
 ## Simulation Results
 
-The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine.
-
 > [!IMPORTANT]
 > The model was configured with the following parameters:
 > - Temperature: `293.15 K`, Time step: `200 us`
@@ -146,4 +144,17 @@ The parameter file can be found [here](01_simulation/parameters.uiv), written in
   <p><i>Figure 4: Simulated induced voltage vs time and position vs time</i></p>
 </div>
 
+The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine.
+
 ## Construction
+
+The generator was printed out of ABS on a Voron 2.4. The armature consisted of a carbon fibre rod with `8` x `N52` poles inserted into it in the pattern described above, using superglue to secure the end poles.
+
+The stator consisted of `4` coils with `180` turns per coil of `0.2 mm` enameled copper wire, with each coil wound in the opposite direction to the last as described above. The coils were secured in place with `10 mm` and `5 mm` thick Kapton tape, with the first and last layers of the coil being wrapped.
+
+The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator stator was split into two pieces: the main piece, which housed the coils and one restoring magnet, and the cap, which held the other restoring magnet and was attached via `3` x `M3 x 20 mm` bolts. The two outputs of the generator were secured to the side and then extended with `~1.25 mm` stranded copper wire.
+
+<div align="center">
+  <img src="04_media/generator_side_profile.jpg" alt="Generator Side profile" style="max-width:600px;">
+  <p><i>Figure 5: Side profile of the finished generator after the Hercules grant night</i></p>
+</div>
