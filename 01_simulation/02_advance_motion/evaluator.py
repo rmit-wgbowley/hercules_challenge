@@ -6,7 +6,7 @@ Description:
     parameter model for the electro and mechanical domains.
     
     NOTE:
-    This simulation uses oscillating function for the human
+    This simulation uses oscillating function for the user
     shaking motion and also uses maxwell stress tensor to calculate
     the du/dz for the restoring motion.
 """

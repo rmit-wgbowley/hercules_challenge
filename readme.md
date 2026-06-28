@@ -239,7 +239,7 @@ However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stre
 > The model was configured with the following parameters:
 > - Temperature: `293.15 K`, Time step: `1 ms`
 > - Mechanical Shaking Frequency: `8.8 Hz`, Electrical Shaking Frequency: `35.2 Hz`
-> - Acceleration: `75 m/s²`, peak-to-peak travel: `40 mm`
+> - Acceleration: `100 m/s²`, peak-to-peak travel: `40 mm`
 > - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
 > - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.47 ∅`, Turns: `184`
 

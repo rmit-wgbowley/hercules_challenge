@@ -6,7 +6,7 @@ Description:
     parameter model for the electro and mechanical domains.
     
     NOTE:
-    Uses a simplified model for the shaking from the human to 
+    Uses a simplified model for the shaking from the user to 
     reduce numerical complexity. Hence, efficiency cannot be quantified.
 """
 
