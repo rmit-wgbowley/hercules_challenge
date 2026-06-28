@@ -92,6 +92,13 @@ This relationship drives one of the main trade-offs: increasing turns raises ind
 
 The high-level topology in figure 2 was selected to enable oscillatory motion through magnetic restoring forces. The additional end poles act as magnetic springs, creating a restoring force when the armature approaches the limits of travel. This allows the armature to return towards the centre position after displacement.
 
+
+<div align="center">
+  <img src="04_media/magnitude_of_b_analog_z.png" alt="|B| vs Z" style="max-width:600px;">
+  <p><i>Figure 3: |B| analog the z-axis of the generator</i></p>
+</div>
+
+
 The alternating pole arrangement (`N-S|S-N`) was selected because the transition between opposing poles creates a rapid change in magnetic field along the z-axis, increasing the spatial rate of change of flux linkage:
 
 $$V \propto \frac{d\lambda}{dz}$$
