@@ -121,14 +121,29 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 
 ## Simulation Results
 
+The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation), written in Python using the `pyfea` solver-adapter engine.
+
 > [!IMPORTANT]
-> The model was configured with the following parameters: 
-> - Temperature: 293.15 K, Shaking Frequency: 8.8 Hz
-> - Pole Coercivity: 956 kA/m, Pole Permeability: 1.05 ∅
-> - Slot Conductivity: 60.07 MS/m, Pole Permeability: 1.0 ∅
+> The model was configured with the following parameters:
+> - Temperature: `293.15 K`, Time step: `200 us`
+> - Shaking Frequency: `8.8 Hz`, peak-to-peak travel: `40 mm`
+> - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
+> - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`
 
 <div align="center">
   <img src="04_media/magnitude_of_b_analog_z.png" alt="|B| vs Z" style="max-width:600px;">
-  <p><i>Figure 3: Simulated |B| analog the z-axis of the generator</i></p>
+  <p><i>Figure 3: Simulated static |B| along the z-axis of the generator</i></p>
 </div>
 
+> [!IMPORTANT]
+> The quasi-transient simulation predicted:
+> - Time: `0.11 s`, Time steps: `568`
+> - Peak voltage: `7.75 V`, RMS Voltage: `4.04 V` 
+> - Resistance: `33.57 Ω`, Power: `0.49 W`
+
+<div align="center">
+  <img src="04_media/FEM_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
+  <p><i>Figure 4: Simulated induced voltage vs time and position vs time</i></p>
+</div>
+
+## Construction

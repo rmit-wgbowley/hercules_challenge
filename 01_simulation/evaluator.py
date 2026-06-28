@@ -136,6 +136,7 @@ if __name__ == "__main__":
     print(f"Peak Voltage:   {peak_voltage:.4f}")
     print("-" * 30)
     
+    t_total = len(t_set) * parameters.numerical.time_step
     print(f"Simulation Complete. Total steps: {len(t_set)}") 
 
     # Using matplotlib, consistent with the B-field graph style
