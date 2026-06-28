@@ -268,7 +268,7 @@ The axial shake generator successfully produced `0.43-0.47 W` of usable power fr
 > - The quasi-transient model using a hybrid force function predicted power within `22%`; however acceleration needs validation
 > - The `180` turn prototype produced `16.8 V` peaks, which is sufficient for the IsoPod's target applications
 
-> [!tips]
+> [!TIP]
 > Future work should focus on:
 > - Using a shaking apparatus for repeatable external motion paths that could be fed into the simulation
 > - Improving fill factor to decrease generator size or increase the number of turns within the generator's form factor
