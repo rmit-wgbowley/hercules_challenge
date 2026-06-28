@@ -23,7 +23,7 @@ number_pairs: 4
 number_slots: 4
 
 travel_factor: 2
-shaking_frequency: 9 (s^-1)
+shaking_frequency: 2.2 (s^-1)
 
 [stator_core]
 # material: "ABS" | not taken into consideration during simulation (AIR)
@@ -33,7 +33,7 @@ wall_radial_thickness: 0.5 m(m)
 [stator_slots]
 material: "copper"
 wire_diameter: 0.2 m(m)
-fill_factor: 0.7
+fill_factor: 0.47
 
 axial_length: 4.6 m(m)
 radial_thickness: 3.4 m(m)

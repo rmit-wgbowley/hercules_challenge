@@ -71,7 +71,7 @@ Once induced voltage is established, the usable electrical power is determined b
 
 $$P = \frac{V_{\text{rms}}^2}{R_{\text{internal}}}$$
 
-This relationship drives one of the main trade-offs: increasing turns raises induced voltage but also increases resistance due to longer wire length. The optimal design maximizes `V^2/R`, not just peak voltage.
+This relationship drives one of the main trade-offs: increasing turns raises induced voltage but also increases resistance due to longer wire length. The optimal design maximizes `V/R`, not just peak voltage.
 
 > [!important]
 > The generator design was constrained by the IsoPod system requirements:
@@ -100,9 +100,16 @@ A pole pitch of `10 mm` was selected, matching the pole length and maintaining d
 
 Maintaining slot overlap throughout the motion range produces a more consistent induced voltage waveform, where the primary amplitude is dominated by the mechanical velocity term:
 
+
 $$V \propto \frac{dz}{dt}$$
 
 The symmetric pole arrangement also reduces unwanted harmonic content compared with asymmetric topologies. Finally, no high-permeability materials were introduced into the armature or stator structure. The stator consists of copper windings, while the magnetic poles use `N52 Neodymium` permanent magnets.
+
+Given the 4 slots within the stator and the 8 poles within the armature, the measured frequency relationship suggests:
+
+$$f_{\text{electrical}} \approx 4 \times f_{\text{mechanical}}$$
+
+This is consistent with the pole pitch and the number of magnetic cycles encountered per mechanical oscillation.
 
 ## Numerical Model
 
@@ -124,10 +131,10 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 > [!IMPORTANT]
 > The model was configured with the following parameters:
 > - Temperature: `293.15 K`, Time step: `200 us`
-> - Mechanical Shaking Frequency: `9 Hz`, Electrical Shaking Frequency: `36 Hz`
+> - Mechanical Shaking Frequency: `2.2 Hz`, Electrical Shaking Frequency: `8.8 Hz`
 > - peak-to-peak travel: `40 mm`
 > - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
-> - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.7 ∅`
+> - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.47 ∅`, Turns: `184`
 
 <div align="center">
   <img src="04_media/magnitude_of_b_analog_z.png" alt="|B| vs Z" style="max-width:600px;">
@@ -137,9 +144,9 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 > [!IMPORTANT]
 > The quasi-transient simulation predicted:
 > - Time: `0.11 s`, Time steps: `112`
-> - Peak voltage: `7.84 V`, RMS Voltage: `4.04 V` 
-> - Positive Rate: `737 V/s`, Negative Rate: `-1.32 V/s`
-> - Resistance: `33.57 Ω`, Power: `0.50 W` 
+> - Peak voltage: `1.31 V`, RMS Voltage: `0.68 V` 
+> - Positive Rate: `35.10 V/s`, Negative Rate: `-49.57 V/s`
+> - Resistance: `22.54 Ω`, Power: `20.3 mW` 
 
 <div align="center">
   <img src="04_media/FEM_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
@@ -154,9 +161,6 @@ The generator was printed out of ABS on a Voron 2.4. The armature consisted of a
 
 The stator consisted of `4` coils with `180` turns per coil of `0.2 mm` enameled copper wire, with each coil wound in the opposite direction to the last as described above. The coils were secured in place with `10 mm` and `5 mm` thick Kapton tape, with the first and last layers of the coil being wrapped.
 
-> [!important]
-> The prototype had a much lower fill factor than the simulation. The simulation assumed a fill factor of `0.7`, resulting in `274` turns per coil, compared to `180` turns in the prototype.
-
 The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator stator was split into two pieces: the main piece, which housed the coils and one restoring magnet, and the cap, which held the other restoring magnet and was attached via `3` x `M3 x 20 mm` bolts. The two outputs of the generator were secured to the side and then extended with `~1.25 mm` stranded copper wire.
 
 <div align="center">
@@ -167,7 +171,7 @@ The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator 
 
 ## Results
 
-The completed generator was tested by hand-shaking at a measured electrical frequency of `8.81 Hz` and hence `2.2 Hz`. The open-circuit voltage was recorded using an oscilloscope:
+The completed generator was tested by hand-shaking at a measured electrical frequency of `8.81 Hz` and hence mechanical frequency of `2.2 Hz` (the 4 coils produce 4 cycles per mechanical oscillation). The open-circuit voltage was recorded using an oscilloscope:
 
 > [!IMPORTANT]
 > The oscilloscope measurements:
@@ -181,17 +185,13 @@ The completed generator was tested by hand-shaking at a measured electrical freq
   <p><i>Figure 6: Voltage vs time trace @ 10V/div vertical, 50ms/div horizontal</i></p>
 </div>
 
-The measured waveform shown in `Figure 6` has a similar shape to the predicted waveform in `Figure 4`. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This could be attributed to gravity assisting downward acceleration while opposing upward motion.
+The measured waveform shown in Figure 6 has a similar shape to the predicted waveform in Figure 4. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This could be attributed to gravity assisting downward acceleration while opposing upward motion.
 
 # Validation
 
-The simulated power output was `0.48 W` whereas the measured power was `0.43-0.47 W`, which is reasonable within `~12%` but this is coincidental agreement. The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
+The simulated power output was `20.3 mW` whereas the measured power was `0.43-0.47 W`, which is a significant difference of `21.5x` The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
 
-A key observation is the frequency mismatch: the electrical frequency measured was `8.81 Hz`, while the mechanical armature frequency was only `2.2 Hz`. The 4 coils produce 4 cycles per mechanical oscillation, giving:
-
-$$f_{\text{electrical}} = 4 \times f_{\text{mechanical}} = 4 \times 2.2 \approx 8.81 \text{ Hz}$$
-
-If the armature acceleration was much higher than expected, the armature was most likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
+The simulation used a higher mechanical frequency but produced lower peak voltages. If the prototype's armature acceleration was much higher than expected, the armature was likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
 
 $$V \propto \frac{d\lambda}{dz}$$
 
@@ -203,10 +203,10 @@ $$V \propto \frac{d\lambda}{dz}$$
 Given this, a new model for the motion could be proposed that takes into consideration the magnetic repulsion force and the likely much higher mechanical acceleration but lower frequency, using an oscillating force function:
 
 $$F_{\text{magnetic}} = -\frac{dU}{dz}$$
-$$F_{\text{shaking}} = F \sin(\omega t + \phi)$$
+$$F_{\text{shaking}} = am\sin(\omega t + \phi)$$
 
 One approach would be to model the armature velocity as:
 
-$$\frac{dz}{dt} = \frac{F_{\text{magnetic}} + F_{\text{shaking}}}{m} \cos(\omega t + \phi)$$
+$$\frac{dz}{dt} = \int \frac{F_{\text{magnetic}} + F_{\text{shaking}}}{m} \, dt$$
 
-However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stress tensor, the `F_{\text{magnetic}}` term will be obtained directly from the solver rather than using finite difference of the magnetic energy density over the z-axis. This decouples the solution from the displacement output, removing dynamic step sizes and leading to a more stable solution.
+However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stress tensor, the $F_{\text{magnetic}}$ term will be obtained directly from the solver rather than using finite difference of the magnetic energy density over the z-axis. This decouples the solution from the displacement output, removing dynamic step sizes and leading to a more stable solution.
