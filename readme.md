@@ -126,7 +126,7 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 > - Temperature: `293.15 K`, Time step: `200 us`
 > - Shaking Frequency: `8.8 Hz`, peak-to-peak travel: `40 mm`
 > - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
-> - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`
+> - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.7 ∅`
 
 <div align="center">
   <img src="04_media/magnitude_of_b_analog_z.png" alt="|B| vs Z" style="max-width:600px;">
@@ -152,9 +152,34 @@ The generator was printed out of ABS on a Voron 2.4. The armature consisted of a
 
 The stator consisted of `4` coils with `180` turns per coil of `0.2 mm` enameled copper wire, with each coil wound in the opposite direction to the last as described above. The coils were secured in place with `10 mm` and `5 mm` thick Kapton tape, with the first and last layers of the coil being wrapped.
 
+> [!important]
+> The prototype had a much lower fill factor than the simulation. The simulation assumed a fill factor of `0.7`, resulting in `274` turns per coil, compared to `180` turns in the prototype.
+
 The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator stator was split into two pieces: the main piece, which housed the coils and one restoring magnet, and the cap, which held the other restoring magnet and was attached via `3` x `M3 x 20 mm` bolts. The two outputs of the generator were secured to the side and then extended with `~1.25 mm` stranded copper wire.
 
 <div align="center">
   <img src="04_media/generator_side_profile.jpg" alt="Generator Side profile" style="max-width:600px;">
   <p><i>Figure 5: Side profile of the finished generator after the Hercules grant night</i></p>
 </div>
+
+
+## Results
+
+The completed generator was tested by hand-shaking at a measured frequency of `8.81 Hz`. The open-circuit voltage was recorded using an oscilloscope:
+
+> [!IMPORTANT]
+> The oscilloscope measurements:
+> - Positive Peak: `16.8 V`, Negative Peak: `-16.4 V`
+> - Positive Rate: `131 V/s`, Negative Rate: `-246 V/s`
+> - V_RMS(AV): `3.47 V`, V_RMS(PEAK): `3.63 V`
+> - Resistance: `27.8 Ω`, Power: `0.43-0.47 W`
+
+<div align="center">
+  <img src="04_media/oscilloscope_trace.png" alt="Oscilloscope trace" style="max-width:600px;">
+  <p><i>Figure 6: Voltage vs time trace @ 10V/div vertical, 50ms/div horizontal</i></p>
+</div>
+
+The measured waveform shown in `Figure 6` has a similar shape to the predicted waveform in `Figure 4`. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This could be attributed to gravity assisting downward acceleration while opposing upward motion.
+
+## Validation
+
