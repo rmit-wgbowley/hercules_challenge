@@ -124,7 +124,8 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 > [!IMPORTANT]
 > The model was configured with the following parameters:
 > - Temperature: `293.15 K`, Time step: `200 us`
-> - Shaking Frequency: `8.8 Hz`, peak-to-peak travel: `40 mm`
+> - Mechanical Shaking Frequency: `9 Hz`, Electrical Shaking Frequency: `36 Hz`
+> - peak-to-peak travel: `40 mm`
 > - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
 > - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.7 ∅`
 
@@ -135,16 +136,17 @@ This was then used to calculate the RMS voltage, and using the generator's inter
 
 > [!IMPORTANT]
 > The quasi-transient simulation predicted:
-> - Time: `0.11 s`, Time steps: `568`
-> - Peak voltage: `7.75 V`, RMS Voltage: `4.04 V` 
-> - Resistance: `33.57 Ω`, Power: `0.49 W`
+> - Time: `0.11 s`, Time steps: `112`
+> - Peak voltage: `7.84 V`, RMS Voltage: `4.04 V` 
+> - Positive Rate: `737 V/s`, Negative Rate: `-1.32 V/s`
+> - Resistance: `33.57 Ω`, Power: `0.50 W` 
 
 <div align="center">
   <img src="04_media/FEM_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
   <p><i>Figure 4: Simulated induced voltage vs time and position vs time</i></p>
 </div>
 
-The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine.
+The parameter file can be found [here](01_simulation/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine. Solver assumptions can be found [here](03_data/assumptions_printout.md).
 
 ## Construction
 
@@ -165,7 +167,7 @@ The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator 
 
 ## Results
 
-The completed generator was tested by hand-shaking at a measured frequency of `8.81 Hz`. The open-circuit voltage was recorded using an oscilloscope:
+The completed generator was tested by hand-shaking at a measured electrical frequency of `8.81 Hz` and hence `2.2 Hz`. The open-circuit voltage was recorded using an oscilloscope:
 
 > [!IMPORTANT]
 > The oscilloscope measurements:
@@ -181,5 +183,30 @@ The completed generator was tested by hand-shaking at a measured frequency of `8
 
 The measured waveform shown in `Figure 6` has a similar shape to the predicted waveform in `Figure 4`. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This could be attributed to gravity assisting downward acceleration while opposing upward motion.
 
-## Validation
+# Validation
 
+The simulated power output was `0.48 W` whereas the measured power was `0.43-0.47 W`, which is reasonable within `~12%` but this is coincidental agreement. The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
+
+A key observation is the frequency mismatch: the electrical frequency measured was `8.81 Hz`, while the mechanical armature frequency was only `2.2 Hz`. The 4 coils produce 4 cycles per mechanical oscillation, giving:
+
+$$f_{\text{electrical}} = 4 \times f_{\text{mechanical}} = 4 \times 2.2 \approx 8.81 \text{ Hz}$$
+
+If the armature acceleration was much higher than expected, the armature was most likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
+
+$$V \propto \frac{d\lambda}{dz}$$
+
+## New Mechanical Model
+
+> [!important]
+> This area is recommended for individuals more familiar with electromagnetic finite element simulations.
+
+Given this, a new model for the motion could be proposed that takes into consideration the magnetic repulsion force and the likely much higher mechanical acceleration but lower frequency, using an oscillating force function:
+
+$$F_{\text{magnetic}} = -\frac{dU}{dz}$$
+$$F_{\text{shaking}} = F \sin(\omega t + \phi)$$
+
+One approach would be to model the armature velocity as:
+
+$$\frac{dz}{dt} = \frac{F_{\text{magnetic}} + F_{\text{shaking}}}{m} \cos(\omega t + \phi)$$
+
+However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stress tensor, the `F_{\text{magnetic}}` term will be obtained directly from the solver rather than using finite difference of the magnetic energy density over the z-axis. This decouples the solution from the displacement output, removing dynamic step sizes and leading to a more stable solution.

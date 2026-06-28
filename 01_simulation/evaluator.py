@@ -11,6 +11,7 @@ Description:
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from math import pi
 from pathlib import Path
@@ -27,7 +28,7 @@ from model.generator import AxialShakeGenerator
 def build_generator(parameters: DynamicLoader) -> AxialShakeGenerator:
     """ Builds the generator based on the parameter file"""
     travel = 2 * parameters.armature_poles.axial_length
-    model = AxialShakeGenerator(parameters, travel, True)
+    model = AxialShakeGenerator(parameters, travel)
     
     return model
 
@@ -74,12 +75,15 @@ def simulate_rms_voltage(
 
     # Simulation Loop
     time_step = parameters.numerical.time_step
-    t, z = 0 * second, 0 * meter
+    t, z, v = 0 * second, 0 * meter, 0 * volt
     
     t_set = []
     v_set = []
     z_set = []
-
+    
+    slew_rate_pos = []
+    slew_rate_neg = []
+    
     # Simulates for two periods
     iteration = 0 
     while t < 1/parameters.model.shaking_frequency:
@@ -98,12 +102,22 @@ def simulate_rms_voltage(
         dF = new_flux_linkage - old_flux_linkage
         induced = - dF/time_step
         
+        # Calculates the slew rate within the phase
+        dv = induced - v
+        slew_rate = dv/time_step
+        
+        if slew_rate < 0 * (volt/second):
+            slew_rate_neg.append(slew_rate.stripped)
+        else:
+            slew_rate_pos.append(slew_rate.stripped)
+        
         t_set.append(t.value)
         v_set.append(induced.value)
         z_set.append(new_z_axial_position.value)
 
         old_flux_linkage = new_flux_linkage 
         z = new_z_axial_position
+        v = induced
         t += time_step
         
         iteration += 1       
@@ -113,8 +127,11 @@ def simulate_rms_voltage(
     mean_squared = sum(squared_voltages) / len(v_set)
     v_rms = mean_squared ** 0.5
 
-    return (v_rms * volt, [v_set, t_set, z_set])
-
+    # Calculates the slew rate
+    avg_pos = sum(slew_rate_pos) / len(slew_rate_pos)
+    avg_neg = sum(slew_rate_neg) / len(slew_rate_neg)
+    
+    return (v_rms * volt, avg_pos * (volt/second), avg_neg * (volt/second), [v_set, t_set, z_set])
 
 if __name__ == "__main__":
     # Imports parameters from .uiv parameter file with units
@@ -126,40 +143,40 @@ if __name__ == "__main__":
     parameters = Parser.open(para_dir)
     model = build_generator(parameters)
 
-    resistance = simulate_resistance(solver_folder, model, True)
-    v_rms, [v_set, t_set, z_set] = simulate_rms_voltage(solver_folder, model, True)
+    resistance = simulate_resistance(solver_folder, model)
+    v_rms, slew_pos, slew_neg, [v_set, t_set, z_set] = simulate_rms_voltage(solver_folder, model, True)
+    
+    # Calculations
     peak_voltage = max(abs(v) for v in v_set) * volt
+    power = (v_rms ** 2) / resistance
 
+    # Print Results
     print("-" * 30)
-    print(f"Resistance:     {resistance:.4f}")
-    print(f"RMS Voltage:    {v_rms:.4f}")
-    print(f"Peak Voltage:   {peak_voltage:.4f}")
+    print(f"Resistance:     {resistance:.3f}")
+    print(f"RMS Voltage:    {v_rms:.3f}")
+    print(f"Peak Voltage:   {peak_voltage:.3f}")
+    print(f"Power:          {power:.3f}")
+    print(f"Slew Rates:     ({slew_pos:.2f}, {slew_neg:.2f}")
     print("-" * 30)
     
-    t_total = len(t_set) * parameters.numerical.time_step
-    print(f"Simulation Complete. Total steps: {len(t_set)}") 
-
-    # Using matplotlib, consistent with the B-field graph style
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+    print(f"Simulation Complete. Time_step: {parameters.numerical.time_step}, Total steps: {len(t_set)}") 
+    fig, (ax1, ax2,) = plt.subplots(2, 1, figsize=(10, 10), sharex=True)
 
     # Plot 1: Induced Voltage
     ax1.plot(t_set, v_set, color='#1f77b4', linewidth=1.5, label='Phase Induced Voltage')
-    ax1.set_ylabel('Induced Voltage (V)')
+    ax1.set_ylabel('Voltage (V)')
     ax1.set_title('Axial-Shake Generator Simulation Dynamics')
     ax1.grid(True, linestyle='--', alpha=0.7)
     ax1.legend(loc='upper right')
 
     # Plot 2: Displacement Position
     ax2.plot(t_set, z_set, color='#2ca02c', linewidth=1.5, label='Axial Position z(t)')
-    ax2.set_xlabel('Time (s)')
     ax2.set_ylabel('Position (m)')
     ax2.grid(True, linestyle='--', alpha=0.7)
     ax2.legend(loc='upper right')
-
     plt.tight_layout()
     
-    # Save using the Path object
-    output_path = solver_folder / "induced_voltage_plot.png"
+    output_path = solver_folder / "simulation_dynamics.png"
     plt.savefig(output_path, dpi=150)
     print(f"Plot saved to: {output_path}")
     plt.show()
