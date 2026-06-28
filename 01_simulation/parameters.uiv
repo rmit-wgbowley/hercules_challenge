@@ -13,7 +13,7 @@ unit_frame: si_metric.ut
 # are lumped parameter based.
 
 [numerical]
-time_step: 2000 u(s)
+time_step: 200 u(s)
 
 [model]
 environmental_temperature: 293.15 (K)

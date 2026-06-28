@@ -68,8 +68,7 @@ def simulate_rms_voltage(
     
     outputs = SolverOutputs()
     outputs.add_circuit(model.PHASE, CircuitOptions.flux_linkage)
-    outputs.add_image(ImageOptions.field_contour)
-    
+
     results = magnetic.solve(outputs)
     old_flux_linkage = results[model.PHASE].flux_linkage
 
@@ -139,23 +138,27 @@ if __name__ == "__main__":
     
     print(f"Simulation Complete. Total steps: {len(t_set)}") 
 
-    # Plotting results using shared time axis
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
+    # Using matplotlib, consistent with the B-field graph style
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 
-    # Induced Voltage
-    ax1.plot(t_set, v_set, color='#1f77b4', linewidth=2, label='Phase Induced Voltage')
-    ax1.set_ylabel('Induced Voltage (V)', fontsize=10)
-    ax1.grid(True, linestyle='--', alpha=0.5)
+    # Plot 1: Induced Voltage
+    ax1.plot(t_set, v_set, color='#1f77b4', linewidth=1.5, label='Phase Induced Voltage')
+    ax1.set_ylabel('Induced Voltage (V)')
+    ax1.set_title('Axial-Shake Generator Simulation Dynamics')
+    ax1.grid(True, linestyle='--', alpha=0.7)
     ax1.legend(loc='upper right')
-    ax1.set_title('Axial-Shake Generator Simulation Dynamics', fontsize=12, fontweight='bold', pad=10)
 
-    # Displacement Position
-    ax2.plot(t_set, z_set, color='#2ca02c', linewidth=2, label='Axial Position z(t)')
-    ax2.set_xlabel('Time (s)', fontsize=10)
-    ax2.set_ylabel('Position (m)', fontsize=10)
-    ax2.grid(True, linestyle='--', alpha=0.5)
+    # Plot 2: Displacement Position
+    ax2.plot(t_set, z_set, color='#2ca02c', linewidth=1.5, label='Axial Position z(t)')
+    ax2.set_xlabel('Time (s)')
+    ax2.set_ylabel('Position (m)')
+    ax2.grid(True, linestyle='--', alpha=0.7)
     ax2.legend(loc='upper right')
 
     plt.tight_layout()
-    plt.savefig(solver_folder / "induced_voltage_plot.png", dpi=150)
+    
+    # Save using the Path object
+    output_path = solver_folder / "induced_voltage_plot.png"
+    plt.savefig(output_path, dpi=150)
+    print(f"Plot saved to: {output_path}")
     plt.show()
