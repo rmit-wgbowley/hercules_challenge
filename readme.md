@@ -60,7 +60,7 @@ The first term is the derivative of flux linkage over the z-axis (magnetic desig
 > Flux linkage can be approximated analytically for intuition. The final flux linkage was obtained using Finite Element Analysis (FEA).
 
 $$\frac{dz}{dt} = A \omega \cos(\omega t + \phi)$$
-$$\frac{d\lambda}{dz} = \frac{d}{dz} (B \cos(z)) \implies -\mu H \sin(z)$$
+$$\frac{d\lambda}{dz} = \frac{d}{dz} (B \cos(z)) \implies -\mu H \sin(2\pi z)$$
 
 > [!note]
 > For a simple magnetic circuit, magnetic flux density can be related to magnetic field strength by `B = μH`, where `B` is the magnetic flux density, `H` is the magnetic field intensity, and `μ` is the permeability, the ability of a material to support magnetic flux.
@@ -104,4 +104,19 @@ $$V \propto \frac{dz}{dt}$$
 
 The symmetric pole arrangement also reduces unwanted harmonic content compared with asymmetric topologies. Finally, no high-permeability materials were introduced into the armature or stator structure. The stator consists of copper windings, while the magnetic poles use `N52 Neodymium` permanent magnets.
 
-## Simulation
+## Numerical Model
+
+> [!important]
+> This area is recommended for individuals more familiar with electromagnetic finite element simulations.
+
+The ASG was modelled using `FemmMagneticRender` (FEMM) with `shapely` for translating `PYFEA` CSG (constructive solid geometry) to FEMM native primitives. An axially symmetric coordinate system (z-r) was used due to the generator's rotational symmetry around its z-axis. A Dirichlet boundary condition was applied, with the radial boundary at `2×` the slot outer radius and the axial boundary at `1.2×` the stator tube length. The armature motion relative to the origin was simulated using:
+
+$$ z = \text{travel} \cdot \sin(2\pi f t) $$
+
+The resistance was obtained from `FemmMagneticSolver` during an initial configuration solve, and then the flux linkage was obtained per solve. Using the simulation time-step, the induced voltage was calculated using finite difference:
+
+$$V_{\text{induced}} = -\frac{\lambda_{\text{new}} - \lambda_{\text{old}}}{t_{\text{step}}}$$
+
+This was then used to calculate the RMS voltage, and using the generator's internal resistance, the expected power output was obtained. This method represents a `quasi-transient` method due to its use of asymptotic field conditions ($t=\infty$) per time step. This is reasonable due to the absence of highly magnetically permeable materials and the low operating frequency of the generator.
+
+## Simulation Results
