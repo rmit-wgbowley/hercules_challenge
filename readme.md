@@ -95,7 +95,7 @@ The high-level topology in figure 2 was selected to enable oscillatory motion th
 
 <div align="center">
   <img src="04_media/magnitude_of_b_analog_z.png" alt="|B| vs Z" style="max-width:600px;">
-  <p><i>Figure 3: |B| analog the z-axis of the generator</i></p>
+  <p><i>Figure 3: Simulated |B| analog the z-axis of the generator</i></p>
 </div>
 
 
