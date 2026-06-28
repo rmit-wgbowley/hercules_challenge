@@ -31,6 +31,20 @@ This repository focuses on the design, simulation, construction, and validation 
 
 In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical energy. Alongside this, the device helps compensate for human memory limitations through consistent and precise medication reminders, tasks where embedded systems excel.
 
+### Repository Structure
+```
+/
+├── README.md # This file
+├── LICENSE - RMIT LICENSE
+├── 01_simulation/
+│ ├── 01_simple_motion/ # Ideal sinusoidal motion model
+│ ├── 02_advance_motion/ # Boundary clamping + Maxwell stress tensor
+│ └── readme.md # Simulation documentation
+├── 02_construction/ # STL files, BOM, assembly notes
+├── 03_data/ # Assumptions, measured data
+└── 04_media/ # Images, GIFs, figures
+```
+
 # Axial Shake Generator
 
 <div align="center">
@@ -183,7 +197,7 @@ The completed generator was tested by hand-shaking at a measured fundamental mec
 > - Resistance: `27.8 Ω`, Power: `0.43-0.47 W`
 
 > [!NOTE]
-> Slew rate can be effected by probe loading due to parasitic capacitance and inductance. Hence `dv/dt` may be slowed due to the `LRC` circuit formed.
+> Slew rate can be affected by probe loading due to parasitic capacitance and inductance. Hence `dv/dt` may be slowed due to the `RLC` circuit formed.
 
 <div align="center">
   <img src="04_media/oscilloscope_trace.png" alt="Oscilloscope trace" style="max-width:600px;">
@@ -194,7 +208,7 @@ The measured waveform shown in Figure 6 has a similar shape to the predicted wav
 
 # Validation
 
-The simulated power output was `0.323 W` whereas the measured power was `0.43-0.47 W`, which is within 25% of the measured value. The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
+The simulated power output was `0.323 W` whereas the measured power was `0.43-0.47 W`, which is `25-45%` lower than the measured value. The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
 
 The simulation used a higher mechanical frequency but produced lower peak voltages. If the prototype's armature acceleration was much higher than expected, the armature was likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
 
@@ -224,7 +238,7 @@ However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stre
 > [!IMPORTANT]
 > The model was configured with the following parameters:
 > - Temperature: `293.15 K`, Time step: `1 ms`
-> - Mechanical Shaking Frequency: `2.2 Hz`, Electrical Shaking Frequency: `8.8 Hz`
+> - Mechanical Shaking Frequency: `8.8 Hz`, Electrical Shaking Frequency: `35.2 Hz`
 > - Acceleration: `75 m/s²`, peak-to-peak travel: `40 mm`
 > - Pole Coercivity: `956 kA/m`, Pole Permeability: `1.05 ∅`
 > - Slot Conductivity: `60.07 MS/m`, Slot Permeability: `1.0 ∅`, Fill Factor: `0.47 ∅`, Turns: `184`
@@ -238,16 +252,32 @@ However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stre
 
 <div align="center">
   <img src="04_media/FEM_advance_induced_voltage_plot.png" alt="Induced voltage vs time" style="max-width:600px;">
-  <p><i>Figure 6: New simulation results (Simulation Results)</i></p>
+  <p><i>Figure 7: New simulation results (Simulation Results)</i></p>
 </div>
 
 The parameter file can be found [here](01_simulation/02_advance_motion/parameters.uiv), written in `.uiv` (unit-informed values). The simulation files can be found [here](01_simulation/readme.md), written in Python using the `pyfea` solver-adapter engine. Solver assumptions can be found [here](03_data/assumptions_printout.md).
 
 # Conclusion
 
+The axial shake generator successfully produced `0.43-0.47 W` of usable power from human motion at a mechanical frequency of `8.8 Hz` (electrical `35.2 Hz`) with an unknown acceleration function. The simulation with the new mechanical model predicted `0.526 W`, within `12-22%` of measured values. The differences in slew rates between the simulation and measured results can be attributed to no-load electrical dynamics versus the oscilloscope probe loading.
 
+> [!IMPORTANT]
+> Key Takeaways:
+> - The `N-S|S-N` magnet topology effectively increases `dλ/dz`, producing sharp B-field spikes
+> - The mechanical model incorporating boundary clamping and Maxwell stress tensor produces a waveform shape much closer to reality than the ideal sinusoidal model
+> - The quasi-transient model using a hybrid force function predicted power within `22%`; however acceleration needs validation
+> - The `180` turn prototype produced `16.8 V` peaks, which is sufficient for the IsoPod's target applications
 
+> [!tips]
+> Future work should focus on:
+> - Using a shaking apparatus for repeatable external motion paths that could be fed into the simulation
+> - Improving fill factor to decrease generator size or increase the number of turns within the generator's form factor
+> - Validating the computational model across more generator parameters and pole-slot factors
+> - Investigating whether the end-cap magnets improve energy output or reduce it
+> - Investigating efficient methods of converting electrical energy into stored energy
+> - Investigating the effect of the probe's `RLC` circuit or generator conversion circuit on dynamics
 
+The generator design may be viable for powering low-energy devices in humanitarian contexts where grid power is unreliable, depending on load factors. However, it could very well be more viable as a battery supplementary system, depending on the trade-offs between battery size and generator duty cycle.
 
 ### Bibtex Citation:
 
