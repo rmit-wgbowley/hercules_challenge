@@ -16,6 +16,10 @@ The Hercules Challenge is a co-design consortium challenge available to first-se
 > [!IMPORTANT]
 > `The Pantheon` consortium received a commendation award for their work on the `IsoPod` at the Hercules Challenge night at RMIT.
 
+---
+
+TLDR: A self-contained axial shake generator that produces 0.43 W of usable power from human motion. Designed, simulated, built, and validated by a first-year engineering student for a humanitarian pill system.
+
 # Overview
 
 ![MIT License](https://img.shields.io/badge/License-MIT-F3F4F4?style=flat-square&logoColor=black)
@@ -23,38 +27,44 @@ The Hercules Challenge is a co-design consortium challenge available to first-se
 ![Power](https://img.shields.io/badge/Output-0.43W-F3F4F4?style=flat-square&color=0DFDF7)
 ![EM](https://img.shields.io/badge/Physics-Electromagnetics-F3F4F4?style=flat-square&logo=physics&logoColor=F3F4F4)
 
-The `IsoPod` is a pill system that reminds users when to take their medication through an e-ink display on the cylindrical bi-sector face of the device, providing a simple visual reminder.
+The `IsoPod` is a pill system that reminds users when to take their medication through an e-ink display on the cylindrical face of the device, providing a simple visual reminder.
 
 This repository focuses on the design, simulation, construction, and validation of the `axial shake generator` (ASG) at the device's core. The generator converts intentional shaking motion into electrical energy via magnetic induction, which charges the IsoPod's Li-Po battery. This extends battery life, or with enough motion, can enable complete self-reliance.
 
+> [!Important]
+> The generator has not been tested with a charging load nor power management system. Power output is expected to decrease, but the magnitude is unknown.
+
 ### Why generate electrical?
 
-In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical energy. Alongside this, the device helps compensate for human memory limitations through consistent and precise medication reminders, tasks where embedded systems excel.
+In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical energy.
 
-### Repository Structure
-```
-/
-├── README.md # This file
-├── LICENSE - RMIT LICENSE
-├── 01_simulation/
-│ ├── 01_simple_motion/ # Ideal sinusoidal motion model
-│ ├── 02_advance_motion/ # Boundary clamping + Maxwell stress tensor
-│ └── readme.md # Simulation documentation
-├── 02_construction/ # STL files, BOM, assembly notes
-├── 03_data/ # Assumptions, measured data
-└── 04_media/ # Images, GIFs, figures
-```
+### Table of Contents
+
+- [Overview](#overview)
+- [Why generate electrical?](#why-generate-electrical)
+- [Axial Shake Generator](#axial-shake-generator)
+  - [Electromagnetics](#electromagnetics)
+  - [Design & Topology](#design--topology)
+  - [Numerical Model](#numerical-model)
+  - [Simulation Results](#simulation-results)
+- [Construction](#construction)
+- [Results](#results)
+- [Validation](#validation)
+  - [New Mechanical Model](#new-mechanical-model)
+  - [Simulation Results](#simulation-results-1)
+- [Conclusion](#conclusion)
+- [Bibtex Citation](#bibtex-citation)
 
 # Axial Shake Generator
 
 <div align="center">
-  <a href="01_simulation/parameters.uiv">
+  <a href="02_fabrication/readme.md">
     <img src="04_media/demonstrator_cross_section.png" alt="Generator cross section" style="max-width:600px;">
   </a>
-  <p><i>Figure 1: Cross-sectional analysis: <a href="01_simulation/parameters.uiv">Click here for parameters</a></i></p>
+  <p><i>Figure 1: Cross-sectional analysis: <a href="02_fabrication/readme.md">Click here for CAD files</a></i></p>
 </div>
 
-The generator consists of an armature (purple) made of poles (magnets), a stator (light blue) made of slots (coils), and restoring magnets which act as magnetic springs that allow the armature to build velocity from the user shaking the device with their forearm muscles.
+The generator consists of an armature `(greyish-olive)` made of poles (magnets), a stator `(minty aqua)` made of slots (coils), and restoring magnets `(light yellow-green)` which act as magnetic springs that allow the armature to build velocity from the user shaking the device with their forearm muscles.
 
 ## Electromagnetics
 
@@ -74,10 +84,12 @@ The first term is the derivative of flux linkage over the z-axis (magnetic desig
 > Flux linkage can be approximated analytically for intuition. The final flux linkage was obtained using Finite Element Analysis (FEA).
 
 $$\frac{dz}{dt} = A \omega \cos(\omega t + \phi)$$
-$$\frac{d\lambda}{dz} = \frac{d}{dz} (B \cos(z)) \implies -\mu H \sin(2\pi z)$$
+$$\frac{d\lambda}{dz} = \frac{d}{dz} (B \cos(kz)) \implies -\mu H k \sin(kz)$$
 
 > [!note]
 > For a simple magnetic circuit, magnetic flux density can be related to magnetic field strength by `B = μH`, where `B` is the magnetic flux density, `H` is the magnetic field intensity, and `μ` is the permeability, the ability of a material to support magnetic flux.
+
+where `k = 2π / pitch` is the spatial frequency.
 
 These two derivatives expose the important mechanics of the system. Increasing acceleration `A` and frequency `ω` may increase induced voltage, but these are constrained by the user's physical abilities. Whereas the permeability `μ` and `H` may increase the induced voltage while generally not being constrained by the user's physical abilities.
 
@@ -104,13 +116,13 @@ This relationship drives one of the main trade-offs: increasing turns raises ind
 > [!note]
 > `N-S` represents an axially magnetized permanent magnet pole. `PA` represents phase A, where `PA+` and `PA-` indicate opposite winding directions.
 
-The high-level topology in figure 2 was selected to enable oscillatory motion through magnetic restoring forces. The additional end poles act as magnetic springs, creating a restoring force when the armature approaches the limits of travel. This allows the armature to return towards the centre position after displacement.
+The high-level topology in figure 2 was selected to enable oscillatory motion through magnetic restoring forces. The end poles act as magnetic springs, creating a restoring force when the armature approaches the limits of travel.
 
 The alternating pole arrangement (`N-S|S-N`) was selected because the transition between opposing poles creates a rapid change in magnetic field along the z-axis, increasing the spatial rate of change of flux linkage:
 
 $$V \propto \frac{d\lambda}{dz}$$
 
-A pole pitch of `10 mm` was selected, matching the pole length and maintaining direct magnetic coupling between adjacent opposing poles. The topology uses four stator slots interacting with four active armature poles, with additional poles placed on each end of the armature to increase usable travel distance. This allows approximately `20 mm` of positive and negative armature displacement while maintaining magnetic coupling between the armature and stator.
+A pole pitch of `10 mm` was selected, matching the pole length and maintaining direct magnetic coupling between adjacent opposing poles. The topology uses four stator slots interacting with four active armature poles, with two additional poles placed on each end of the armature to increase usable travel distance. This allows approximately `20 mm` of positive and negative armature displacement while maintaining magnetic coupling between the armature and stator.
 
 Maintaining slot overlap throughout the motion range produces a more consistent induced voltage waveform, where the primary amplitude is dominated by the mechanical velocity term:
 
@@ -185,7 +197,7 @@ The restoring magnets were flat `12 mm x 3 mm` neodymium magnets. The generator 
 
 ## Results
 
-The completed generator was tested by hand-shaking at a measured fundamental mechanical frequency of `8.81 Hz` with a electrical frequency of `35.2 Hz`
+The completed generator was tested by hand-shaking at a measured fundamental mechanical frequency of `8.81 Hz` with an electrical frequency of `35.2 Hz`
 (the 4 coils produce 4 cycles per mechanical oscillation). The open-circuit voltage was recorded using an oscilloscope:
 
 
@@ -204,13 +216,13 @@ The completed generator was tested by hand-shaking at a measured fundamental mec
   <p><i>Figure 6: Voltage vs time trace @ 10V/div vertical, 50ms/div horizontal</i></p>
 </div>
 
-The measured waveform shown in Figure 6 has a similar shape to the predicted waveform in Figure 4. However, the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item. Another notable observation is that the trace appears asymmetric in the rate of change, with a higher negative voltage rate than positive. This may be due to gravity assisting downward acceleration while opposing upward motion.
+The measured waveform shown in Figure 6 has a similar shape to the predicted waveform in Figure 4 but seems less periodic and more jerky. Another observation is that the negative recovery appears stretched while still being a similar amplitude. This is most likely attributed to degradation of the prototype due to its usage as a demo item.
 
 # Validation
 
 The simulated power output was `0.323 W` whereas the measured power was `0.43-0.47 W`, which is `25-45%` lower than the measured value. The peak voltages are much higher and the slew rate was significantly different, leading to the possible source being the idealized motion of the armature versus the realized motion.
 
-The simulation used a higher mechanical frequency but produced lower peak voltages. If the prototype's armature acceleration was much higher than expected, the armature was likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
+The simulation used the same mechanical frequency but produced lower peak voltages. If the prototype's armature acceleration was much higher than expected, the armature was likely slamming into the end-caps due to the repulsion force not being high enough. The maximum velocity was most likely higher and hence:
 
 $$V \propto \frac{d\lambda}{dz}$$
 
@@ -231,7 +243,7 @@ $$\frac{dz}{dt} = \int \frac{F_{\text{magnetic}} + F_{\text{shaking}}}{m} \ dt$$
 > [!Note]
 > Euler method was used to integrate from acceleration to z-position, the stability was not formalized.
 
-However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stress tensor, the $F_{\text{magnetic}}$ term will be obtained directly from the solver rather than using finite difference of the magnetic energy density over the z-axis. This decouples the solution from the displacement output, removing dynamic step sizes and leading to a more stable solution.
+However, given the ability of `FemmMagneticSolver` to calculate the Maxwell stress tensor, the $F_{\text{magnetic}}$ term was obtained directly from the solver rather than using finite difference of the magnetic energy density over the z-axis. This decouples the solution from the displacement output, removing dynamic step sizes and leading to a potentially more stable solution.
 
 ## Simulation Results 
 
@@ -265,7 +277,7 @@ The axial shake generator successfully produced `0.43-0.47 W` of usable power fr
 > Key Takeaways:
 > - The `N-S|S-N` magnet topology effectively increases `dλ/dz`, producing sharp B-field spikes
 > - The mechanical model incorporating boundary clamping and Maxwell stress tensor produces a waveform shape much closer to reality than the ideal sinusoidal model
-> - The quasi-transient model using a hybrid force function predicted power within `22%`; however acceleration needs validation
+> - The quasi-transient model using a hybrid force function predicted power within `22%`; however, acceleration needs validation
 > - The `180` turn prototype produced `16.8 V` peaks, which is sufficient for the IsoPod's target applications
 
 > [!TIP]
