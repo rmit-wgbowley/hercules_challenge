@@ -18,7 +18,7 @@ The Hercules Challenge is a co-design consortium challenge available to first-se
 
 ---
 
-TLDR: A self-contained axial shake generator that produces 0.43 W of usable power from human motion. Designed, simulated, built, and validated by a first-year engineering student for a humanitarian pill system.
+TLDR: Designed, simulated, manufactured, and experimentally validated a human-powered axial electromagnetic generator producing `0.43–0.47 W` from hand shaking using custom FEA and physical prototype testing
 
 # Overview
 
@@ -32,11 +32,18 @@ The `IsoPod` is a pill system that reminds users when to take their medication t
 This repository focuses on the design, simulation, construction, and validation of the `axial shake generator` (ASG) at the device's core. The generator converts intentional shaking motion into electrical energy via magnetic induction, which charges the IsoPod's Li-Po battery. This extends battery life, or with enough motion, can enable complete self-reliance.
 
 > [!Important]
+> **Measured Output (8.8 Hz human shaking):**
+> - Peak Voltage: `16.8 V`
+> - RMS Voltage: `3.47 V`
+> - Power Output: `0.43–0.47 W`
+
+> [!Important]
 > The generator has not been tested with a charging load nor power management system. Power output is expected to decrease, but the magnitude is unknown.
 
 ### Why generate electrical?
 
-In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical energy.
+In humanitarian contexts, reliable grid power isn't guaranteed, nor are reliable supply chains for expendable batteries. The ASG decouples the `IsoPod` from external infrastructure by converting user motion into electrical 
+energy.
 
 ### Table of Contents
 
@@ -289,7 +296,7 @@ The axial shake generator successfully produced `0.43-0.47 W` of usable power fr
 > - Investigating efficient methods of converting electrical energy into stored energy
 > - Investigating the effect of the probe's `RLC` circuit or generator conversion circuit on dynamics
 
-The generator design may be viable for powering low-energy devices in humanitarian contexts where grid power is unreliable, depending on load factors. However, it could very well be more viable as a battery supplementary system, depending on the trade-offs between battery size and generator duty cycle.
+The generator design demonstrated the feasibility of powering low-energy devices in humanitarian contexts where grid power is unreliable, depending on load factors. However, it may be more viable as a battery supplementary system, depending on the trade-offs between battery size and generator duty cycle.
 
 ### Bibtex Citation:
 
