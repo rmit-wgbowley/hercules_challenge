@@ -53,7 +53,7 @@ def pre_simulation(folder: Path, model: AxialShakeGenerator, verbose: bool = Fal
     resistance = results[model.PHASE].resistance
     volume = results[armature[0]].volume
     
-    mass = volume * model.armature_material.NdFeB.physical.density
+    mass = volume * model.armature_material.physical.density
     
     model.PHASE.current = 0.0 * ampere
     return resistance, mass

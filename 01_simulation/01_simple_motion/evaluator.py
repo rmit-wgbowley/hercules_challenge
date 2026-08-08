@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from math import pi
 from pathlib import Path
 from pyfea.domain.units import Parser
-from pyfea import Q, unit_validator, ampere, ohm, volt, second, meter, nullset
+from pyfea import Q, expects, ampere, ohm, volt, second, meter, nullset
 
 from pyfea.domain.units import DynamicLoader
 from pyfea.solver.femm.domains.magnetostatic.solver import FEMMMagnetostaticSolver
@@ -32,7 +32,7 @@ def build_generator(parameters: DynamicLoader) -> AxialShakeGenerator:
     return model
 
 
-@unit_validator(ohm)
+@expects(ohm)
 def simulate_resistance(folder: Path, model: AxialShakeGenerator, verbose: bool = False) -> Q:
     """ Simulate the resistance of the generator using a test current """
     magnetic = FEMMMagnetostaticSolver(folder, verbose=verbose)
